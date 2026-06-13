@@ -1,0 +1,135 @@
+:root {
+  --lbnl-dark-blue:  #00313C;
+  --lbnl-teal:       #007681;
+  --lbnl-light-gray: #B1B3B3;
+  --lbnl-dark-gray:  #63666A;
+  --lbnl-white:      #FFFFFF;
+}
+
+$global-font-family: "Libre Franklin", "Franklin Gothic Medium",
+                     "Arial Narrow", Arial, sans-serif;
+
+/* ---- Global typography & color ---- */
+body {
+  font-family: $global-font-family !important;
+  color: var(--lbnl-dark-blue);
+  background: var(--lbnl-white);
+}
+h1, h2, h3, h4, h5, h6, p, a, li, nav, button, input, textarea, figcaption {
+  font-family: $global-font-family !important;
+}
+h1, h2, h3, h4, h5, h6 { color: var(--lbnl-dark-blue); }
+a { color: var(--lbnl-teal); }
+a:hover { color: var(--lbnl-dark-blue); }
+
+/* ---- Logo bar (white, sits above nav) ---- */
+.lbnl-logo-bar {
+  background: var(--lbnl-white);
+  border-bottom: 2px solid var(--lbnl-light-gray);
+  padding: 0.75rem 1.5rem;
+}
+.lbnl-logo-bar__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.lbnl-logo-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.lbnl-logo { height: 56px; width: auto; object-fit: contain; }
+.lbnl-logo--lab      { height: 48px; }
+.lbnl-logo--swatches { height: 56px; }
+
+/* ---- NAV BANNER (TEAL, directly under logo bar) ---- */
+/* Override yat's default header/nav background to LBNL teal. */
+.navbar,
+.site-header,
+.header,
+.post-top-bar,
+nav.navbar {
+  background-color: var(--lbnl-teal) !important;
+  background-image: none !important;
+}
+.navbar a,
+.site-header a,
+.nav-link,
+.navbar .menu a,
+.navbar-nav .nav-item a {
+  color: var(--lbnl-white) !important;
+  font-family: $global-font-family !important;
+  letter-spacing: 0.02em;
+}
+.navbar a:hover,
+.nav-link:hover {
+  color: var(--lbnl-dark-blue) !important;
+}
+.nav-link.active,
+.navbar a.active {
+  border-bottom: 3px solid var(--lbnl-white);
+}
+
+/* ---- HERO ---- */
+.lbnl-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3.5rem;
+  text-align: center;
+}
+.lbnl-hero__title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 700;
+  color: var(--lbnl-dark-blue);
+  margin: 0.5rem 0 2rem;
+  letter-spacing: 0.01em;
+}
+.lbnl-hero__images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.lbnl-hero__fig {
+  flex: 1 1 360px;
+  max-width: 520px;
+  margin: 0;
+}
+.lbnl-hero__fig img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.lbnl-caption {
+  color: var(--lbnl-dark-gray);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+/* ---- Buttons / accents ---- */
+.btn, button {
+  background: var(--lbnl-teal);
+  color: var(--lbnl-white);
+  border: none;
+}
+.btn:hover, button:hover {
+  background: var(--lbnl-dark-blue);
+}
+
+/* ---- Footer ---- */
+.site-footer, footer {
+  background: var(--lbnl-dark-blue) !important;
+  color: var(--lbnl-light-gray) !important;
+}
+.site-footer a, footer a { color: var(--lbnl-light-gray) !important; }
+
+/* ---- Responsive ---- */
+@media (max-width: 700px) {
+  .lbnl-logo-bar__inner { justify-content: center; }
+  .lbnl-logo-bar__right { justify-content: center; }
+}

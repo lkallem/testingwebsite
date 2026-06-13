@@ -1,0 +1,37 @@
+title: MoSAIC-P38
+description: >-
+  MoSAIC-P38 — a computer architecture system from the LBNL
+  Computer Architecture Group (AMCR).
+theme: jekyll-theme-yat
+baseurl: ""
+url: ""
+
+# Brand
+color_palette:
+  dark_blue:  "#00313C"
+  teal:       "#007681"
+  light_gray: "#B1B3B3"
+  dark_gray:  "#63666A"
+
+# Navigation (rendered directly under the logo bar)
+header_pages:
+  - index.md
+  - documentation.md
+  - tutorials.md
+  - test-cases.md
+  - about.md
+
+# yat theme settings
+yat:
+  date_format: "%b %-d, %Y"
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-paginate
+
+exclude:
+  - AGENTS.md
+  - Gemfile
+  - Gemfile.lock
+  - README.md
