@@ -1,10 +1,42 @@
----
-layout: default
----
-{% include logo-bar.html %}
-{% include hero.html %}
-<div class="page-content">
-  <div class="wrapper">
-    {{ content }}
-  </div >
-</div >
+<!--
+  Layout: home  (landing page)
+
+  This is a STANDALONE copy of the yat theme's `default.html`, intentionally NOT
+  declaring `layout: default`. Reason: the theme's default layout always renders
+  `views/banner.html`, which injects the theme's placeholder banner ("Your
+  awesome heading"). We replace that banner with our own logo bar + hero, so we
+  reproduce the default layout's structure here and simply OMIT the banner
+  include. Everything else (head, header/nav, footer, theme extensions) is kept
+  identical to the theme so behavior matches the rest of the site.
+
+  Page order on screen: nav (header) -> logo bar -> hero -> page content.
+-->
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {%- include head.html -%}
+
+  <body>
+
+    <!-- Teal navigation bar (theme header, restyled in _sass/custom/_lbnl.scss) -->
+    {%- include views/header.html -%}
+
+    <!-- Theme behavior helpers (anchor scrolling, dark-mode toggle, back-to-top) -->
+    {%- include extensions/hashlocate.html -%}
+    {%- include extensions/theme-toggle.html -%}
+    {%- include extensions/click-to-top.html -%}
+
+    <!-- Custom landing content: white logo band, then the title + diagrams -->
+    {% include logo-bar.html %}
+    {% include hero.html %}
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        {{ content }}
+      </div>
+    </main>
+
+    {%- include views/footer.html -%}
+
+  </body>
+</html>

@@ -1,12 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+  Document <head>
+
+  This is a local copy of the yat theme's head.html that OVERRIDES the theme's
+  version (Jekyll resolves _includes/ in the project before the gem). It must
+  stay in sync with the theme's head on the essentials below; the ONLY
+  project-specific addition is the Libre Franklin web font.
+
+  Do NOT remove the main.css <link> or the <head> wrapper: dropping them leaves
+  the whole site unstyled (this happened during development).
+-->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Test Cases | MoSAIC-P38</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Test Cases">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
+<meta name="twitter:description" property="og:description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
+<link rel="canonical" href="http://localhost:4000/test-cases/">
+<meta property="og:url" content="http://localhost:4000/test-cases/">
+<meta property="og:site_name" content="MoSAIC-P38">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Test Cases">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).","headline":"Test Cases","url":"http://localhost:4000/test-cases/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- LBNL brand font: Libre Franklin (see AGENTS.md typography requirement) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+  <!-- Compiled site stylesheet (yat theme + LBNL overrides) -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="MoSAIC-P38">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+<script src="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/default-skin/default-skin.css" rel="stylesheet">
+<style>
+  .pswp .pswp__container .pswp__img {
+    background-color: white;
+  }
+</style>
+
+<script>
+  function initPhotoSwipe() {
+    var mainEl = document.querySelector("section.main");
+
+    var imgEls = mainEl.querySelectorAll("img:not(.emoji)");
+    imgEls.forEach((imgEl) => {
+      imgEl.outerHTML = `
+    <a class="photo-swipe"
+      href="${imgEl.src}"
+      data-width="${imgEl.getAttribute("width") || imgEl.width * 2}"
+      data-height="${imgEl.getAttribute("height") || imgEl.height * 2}"
+      data-caption="${imgEl.getAttribute("caption") || imgEl.alt}"
+      target="_blank">
+      ${imgEl.outerHTML}
+    </a>`;
+    });
+
+    // Init empty gallery array
+    var container = [];
+
+    // Loop over gallery items and push it to the array
+    var linkEls = mainEl.querySelectorAll("a.photo-swipe");
+    linkEls.forEach((link) => {
+      var item = {
+        src: link.getAttribute("href"),
+        w: link.dataset.width,
+        h: link.dataset.height,
+        title: link.dataset.caption || "",
+      };
+      container.push(item);
+    });
+
+    // Define click event on gallery item
+    linkEls.forEach((link, index) => {
+      link.addEventListener("click", (event) => {
+        // Prevent location change
+        event.preventDefault();
+
+        // Define object and gallery options
+        var pswp = document.querySelector(".pswp");
+
+        var zoomLevel = 1;
+
+        // Define object and gallery options
+        var options = {
+          index: index,
+          bgOpacity: 0.85,
+          showHideOpacity: true,
+          closeOnScroll: true,
+          maxSpreadZoom: 1,
+          getDoubleTapZoom: (isMouseClick, item) => {
+            if (item.detail) {
+              zoomLevel += item.detail.origEvent.shiftKey ? -1 : 1;
+              item.detail = undefined;
+            } else {
+              zoomLevel = zoomLevel === 1 ? 2 : 1;
+            }
+            if (zoomLevel <= 1) {
+              zoomLevel = 1;
+              setTimeout(() => pswp.classList.remove("pswp--zoomed-in"), 0);
+            }
+            return item.initialZoomLevel * zoomLevel;
+          },
+        };
+
+        // Initialize PhotoSwipe
+        var gallery = new PhotoSwipe(
+          pswp,
+          PhotoSwipeUI_Default,
+          container,
+          options
+        );
+
+        gallery.init();
+
+        // Custom zoom event
+        gallery.container.addEventListener("pswpTap", (e) => {
+          gallery.currItem.detail = e.detail;
+        });
+      });
+    });
+  }
+
+  window.addEventListener("load", initPhotoSwipe);
+</script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
 </head>
 <body>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe.
+           It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg"></div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides.
+              PhotoSwipe keeps only 3 of them in the DOM to save memory.
+              Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 
 
@@ -701,5 +973,6 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </footer>
+
 </body>
 </html>

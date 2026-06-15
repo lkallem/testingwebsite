@@ -1,33 +1,71 @@
+// =============================================================================
+//  LBNL / MoSAIC-P38 brand overrides for the jekyll-theme-yat theme
+// -----------------------------------------------------------------------------
+//  This partial is imported LAST (see assets/css/main.scss) so every rule here
+//  wins over the theme's defaults. It is the single source of truth for the
+//  site's brand colors, typography, and the three custom UI regions:
+//      1. Logo bar   (.lbnl-logo-bar)   -> _includes/logo-bar.html
+//      2. Teal nav    (.site-header)     -> theme's _includes/views/header.html
+//      3. Hero         (.lbnl-hero)       -> _includes/hero.html
+//
+//  CONSTRAINTS (see AGENTS.md):
+//   - Only the four LBNL palette colors below may be used (plus white).
+//   - All text must render in "Libre Franklin".
+//   - The nav bar must be Teal (#007681).
+//
+//  Why `!important` is used: yat ships its own typography/header rules with
+//  equal-or-higher specificity that load before this file. `!important` is the
+//  least-fragile way to guarantee the brand overrides win without copying and
+//  maintaining the theme's entire selector tree.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+//  Brand palette
+//  Exposed as CSS custom properties so they can be referenced in dev tools and
+//  (if ever needed) overridden at runtime. SCSS code below references these via
+//  var(--lbnl-*); do NOT hardcode hex values elsewhere.
+// -----------------------------------------------------------------------------
 :root {
-  --lbnl-dark-blue:  #00313C;
-  --lbnl-teal:       #007681;
-  --lbnl-light-gray: #B1B3B3;
-  --lbnl-dark-gray:  #63666A;
-  --lbnl-white:      #FFFFFF;
+  --lbnl-dark-blue:  #00313C; // PMS 547      - body text, headings
+  --lbnl-teal:       #007681; // PMS 7474     - nav bar, links, buttons
+  --lbnl-light-gray: #B1B3B3; // Cool Gray 5  - borders / dividers
+  --lbnl-dark-gray:  #63666A; // Cool Gray 10 - captions / secondary text
+  --lbnl-white:      #FFFFFF; // page background, nav text
 }
 
+// Global font stack. "Libre Franklin" is loaded from Google Fonts in
+// _includes/head.html; the remaining entries are the web-safe fallback chain.
 $global-font-family: "Libre Franklin", "Franklin Gothic Medium",
                      "Arial Narrow", Arial, sans-serif;
 
-/* ---- Global typography & color ---- */
+// -----------------------------------------------------------------------------
+//  Global typography & color
+// -----------------------------------------------------------------------------
 body {
   font-family: $global-font-family !important;
   color: var(--lbnl-dark-blue);
   background: var(--lbnl-white);
 }
+
+// Force Libre Franklin on every text-bearing element (overrides yat defaults).
 h1, h2, h3, h4, h5, h6, p, a, li, nav, button, input, textarea, figcaption {
   font-family: $global-font-family !important;
 }
-h1, h2, h3, h4, h5, h6 { color: var(--lbnl-dark-blue); }
-a { color: var(--lbnl-teal); }
-a:hover { color: var(--lbnl-dark-blue); }
 
-/* ---- Logo bar (white, sits above nav) ---- */
+h1, h2, h3, h4, h5, h6 { color: var(--lbnl-dark-blue); }
+a                       { color: var(--lbnl-teal); }
+a:hover                 { color: var(--lbnl-dark-blue); }
+
+// -----------------------------------------------------------------------------
+//  1. Logo bar  (white band of partner logos)
+//  Markup: _includes/logo-bar.html
+// -----------------------------------------------------------------------------
 .lbnl-logo-bar {
   background: var(--lbnl-white);
   border-bottom: 2px solid var(--lbnl-light-gray);
   padding: 0.75rem 1.5rem;
 }
+
 .lbnl-logo-bar__inner {
   max-width: 1100px;
   margin: 0 auto;
@@ -37,57 +75,64 @@ a:hover { color: var(--lbnl-dark-blue); }
   flex-wrap: wrap;
   gap: 1rem;
 }
+
 .lbnl-logo-bar__right {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-.lbnl-logo { height: 56px; width: auto; object-fit: contain; }
-.lbnl-logo--lab      { height: 48px; }
-.lbnl-logo--swatches { height: 56px; }
 
-/* ---- NAV BANNER (TEAL, directly under logo bar) ---- */
-/* Override yat's default header/nav background to LBNL teal. */
-.navbar,
-.site-header,
-.header,
-.post-top-bar,
-nav.navbar {
+// Logos share a base height; per-logo modifiers tune individual artwork so the
+// differing source aspect ratios line up optically.
+.lbnl-logo            { height: 56px; width: auto; object-fit: contain; }
+.lbnl-logo--lab       { height: 48px; }
+.lbnl-logo--swatches  { height: 56px; }
+
+// -----------------------------------------------------------------------------
+//  2. Navigation bar  (TEAL)
+//  This restyles the THEME's own header (<header class="site-header">). Earlier
+//  iterations also targeted .navbar / .nav-link / .post-top-bar, but yat emits
+//  none of those classes, so they were dead selectors and have been removed.
+// -----------------------------------------------------------------------------
+.site-header {
   background-color: var(--lbnl-teal) !important;
   background-image: none !important;
 }
-.navbar a,
-.site-header a,
-.nav-link,
-.navbar .menu a,
-.navbar-nav .nav-item a {
+
+.site-header a {
   color: var(--lbnl-white) !important;
   font-family: $global-font-family !important;
   letter-spacing: 0.02em;
 }
-.navbar a:hover,
-.nav-link:hover {
+
+.site-header a:hover {
   color: var(--lbnl-dark-blue) !important;
 }
-.nav-link.active,
-.navbar a.active {
+
+.site-header a.active {
   border-bottom: 3px solid var(--lbnl-white);
 }
 
-/* ---- HERO ---- */
+// -----------------------------------------------------------------------------
+//  3. Hero  (page title + the two diagram images)
+//  Markup: _includes/hero.html
+// -----------------------------------------------------------------------------
 .lbnl-hero {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 3.5rem;
   text-align: center;
 }
+
 .lbnl-hero__title {
+  // Fluid type: scales with viewport, clamped between 2.5rem and 5rem.
   font-size: clamp(2.5rem, 7vw, 5rem);
   font-weight: 700;
   color: var(--lbnl-dark-blue);
   margin: 0.5rem 0 2rem;
   letter-spacing: 0.01em;
 }
+
 .lbnl-hero__images {
   display: flex;
   flex-wrap: wrap;
@@ -95,40 +140,51 @@ nav.navbar {
   justify-content: center;
   gap: 2rem;
 }
+
 .lbnl-hero__fig {
-  flex: 1 1 360px;
+  flex: 1 1 360px; // grow/shrink from a 360px basis; wraps on narrow screens
   max-width: 520px;
   margin: 0;
 }
+
 .lbnl-hero__fig img {
   width: 100%;
   height: auto;
   display: block;
 }
+
 .lbnl-caption {
   color: var(--lbnl-dark-gray);
   font-size: 0.95rem;
   margin-top: 0.5rem;
 }
 
-/* ---- Buttons / accents ---- */
+// -----------------------------------------------------------------------------
+//  Buttons / accents
+// -----------------------------------------------------------------------------
 .btn, button {
   background: var(--lbnl-teal);
   color: var(--lbnl-white);
   border: none;
 }
+
 .btn:hover, button:hover {
   background: var(--lbnl-dark-blue);
 }
 
-/* ---- Footer ---- */
+// -----------------------------------------------------------------------------
+//  Footer
+// -----------------------------------------------------------------------------
 .site-footer, footer {
   background: var(--lbnl-dark-blue) !important;
   color: var(--lbnl-light-gray) !important;
 }
+
 .site-footer a, footer a { color: var(--lbnl-light-gray) !important; }
 
-/* ---- Responsive ---- */
+// -----------------------------------------------------------------------------
+//  Responsive: center the logo bar contents on small screens.
+// -----------------------------------------------------------------------------
 @media (max-width: 700px) {
   .lbnl-logo-bar__inner { justify-content: center; }
   .lbnl-logo-bar__right { justify-content: center; }

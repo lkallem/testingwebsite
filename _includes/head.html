@@ -1,3 +1,36 @@
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--
+  Document <head>
+
+  This is a local copy of the yat theme's head.html that OVERRIDES the theme's
+  version (Jekyll resolves _includes/ in the project before the gem). It must
+  stay in sync with the theme's head on the essentials below; the ONLY
+  project-specific addition is the Libre Franklin web font.
+
+  Do NOT remove the main.css <link> or the <head> wrapper: dropping them leaves
+  the whole site unstyled (this happened during development).
+-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+  {%- seo -%}
+  <link rel="icon" href="{{ site.favicon }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- LBNL brand font: Libre Franklin (see AGENTS.md typography requirement) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Compiled site stylesheet (yat theme + LBNL overrides) -->
+  <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+  <script src="{{ "/assets/js/main.js" | relative_url }}"></script>
+  {%- feed_meta -%}
+  {%- if jekyll.environment == 'production' and site.google_analytics -%}
+  {%- include extensions/google-analytics.html -%}
+  {%- endif -%}
+  {%- include extensions/code-highlight.html -%}
+  {%- include extensions/photo-swipe.html -%}
+  {%- include custom-head.html -%}
+</head>

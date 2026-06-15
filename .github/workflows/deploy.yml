@@ -1,15 +1,24 @@
+# Builds the Jekyll site with the project's own Gemfile and deploys it to
+# GitHub Pages. We use this custom workflow (instead of "Pages: deploy from a
+# branch") because the classic github-pages gem only supports a whitelist of
+# themes and rejects jekyll-theme-yat.
+#
+# One-time setup: in the repo, set Settings > Pages > Source = "GitHub Actions".
 name: Deploy Jekyll site to GitHub Pages
 
+# Deploy on every push to main; also allow manual runs from the Actions tab.
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
 
+# Permissions required by the deploy-pages action (OIDC token + Pages write).
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Allow only one in-flight Pages deployment at a time.
 concurrency:
   group: "pages"
   cancel-in-progress: false

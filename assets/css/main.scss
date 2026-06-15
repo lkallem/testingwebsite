@@ -1,7 +1,28 @@
 ---
+# This empty front matter (the two `---` lines) is REQUIRED. It tells Jekyll to
+# run this file through the SCSS converter and emit /assets/css/main.css.
 ---
+
+// -----------------------------------------------------------------------------
+//  Site stylesheet entry point
+// -----------------------------------------------------------------------------
+//  Build order matters:
+//   1. Set the theme's SCSS variables BEFORE importing "yat" so the theme picks
+//      them up while compiling.
+//   2. Import the yat theme.
+//   3. Import our LBNL brand overrides LAST so they take precedence.
+// -----------------------------------------------------------------------------
+
+// yat derives its header/footer/link colors from these. We set both to the
+// LBNL teal so the theme's own chrome is on-brand even before the overrides in
+// custom/lbnl apply. (Keep in sync with --lbnl-teal in _sass/custom/_lbnl.scss.)
 $theme-color: #007681;
 $brand-color: #007681;
+
+// yat's _base.scss references $content-width but leaves it undefined in some
+// configurations, which crashes the Sass compile. Defining it here restores the
+// theme's intended default content width and keeps the build green.
 $content-width: 920px;
-@import "yat";
-@import "custom/lbnl";
+
+@import "yat";            // upstream theme
+@import "custom/lbnl";    // LBNL/MoSAIC brand overrides (must come last)

@@ -1,11 +1,23 @@
-<!-- LOGO BAR — replicates the top row of the reference image.
-     Replace placeholder images in assets/images/ with the real logos. -->
+<!--
+  Logo bar — white band of partner logos shown directly under the nav.
+
+  Layout: one logo on the left (Berkeley Lab), three on the right (AMCR, CAG,
+  color swatches). Styling lives in _sass/custom/_lbnl.scss (.lbnl-logo-bar*).
+
+  Images live in assets/images/. To swap artwork, replace the files in place
+  (keep the same filenames) — no markup changes needed. `alt` text is required
+  for accessibility; update it if a logo is replaced.
+-->
 <div class="lbnl-logo-bar">
   <div class="lbnl-logo-bar__inner">
+
+    <!-- Left: primary lab logo -->
     <div class="lbnl-logo-bar__left">
       <img src="{{ '/assets/images/logo-berkeley-lab.png' | relative_url }}"
            alt="Berkeley Lab logo" class="lbnl-logo lbnl-logo--lab">
     </div>
+
+    <!-- Right: program / group logos + brand color swatches -->
     <div class="lbnl-logo-bar__right">
       <img src="{{ '/assets/images/logo-amcr.png' | relative_url }}"
            alt="AMCR — Applied Mathematics & Computational Research"
@@ -16,5 +28,6 @@
       <img src="{{ '/assets/images/logo-swatches.png' | relative_url }}"
            alt="Color swatches" class="lbnl-logo lbnl-logo--swatches">
     </div>
+
   </div>
 </div>

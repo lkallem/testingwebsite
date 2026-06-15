@@ -1,15 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--
+  Layout: home  (landing page)
+
+  This is a STANDALONE copy of the yat theme's `default.html`, intentionally NOT
+  declaring `layout: default`. Reason: the theme's default layout always renders
+  `views/banner.html`, which injects the theme's placeholder banner ("Your
+  awesome heading"). We replace that banner with our own logo bar + hero, so we
+  reproduce the default layout's structure here and simply OMIT the banner
+  include. Everything else (head, header/nav, footer, theme extensions) is kept
+  identical to the theme so behavior matches the rest of the site.
+
+  Page order on screen: nav (header) -> logo bar -> hero -> page content.
+--><html lang="en">
+<!--
+  Document <head>
+
+  This is a local copy of the yat theme's head.html that OVERRIDES the theme's
+  version (Jekyll resolves _includes/ in the project before the gem). It must
+  stay in sync with the theme's head on the essentials below; the ONLY
+  project-specific addition is the Libre Franklin web font.
+
+  Do NOT remove the main.css <link> or the <head> wrapper: dropping them leaves
+  the whole site unstyled (this happened during development).
+-->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Home | MoSAIC-P38</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Home">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
+<meta name="twitter:description" property="og:description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
+<link rel="canonical" href="http://localhost:4000/">
+<meta property="og:url" content="http://localhost:4000/">
+<meta property="og:site_name" content="MoSAIC-P38">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Home">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).","headline":"Home","name":"MoSAIC-P38","url":"http://localhost:4000/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- LBNL brand font: Libre Franklin (see AGENTS.md typography requirement) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+  <!-- Compiled site stylesheet (yat theme + LBNL overrides) -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="MoSAIC-P38">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+<script src="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/default-skin/default-skin.css" rel="stylesheet">
+<style>
+  .pswp .pswp__container .pswp__img {
+    background-color: white;
+  }
+</style>
+
+<script>
+  function initPhotoSwipe() {
+    var mainEl = document.querySelector("section.main");
+
+    var imgEls = mainEl.querySelectorAll("img:not(.emoji)");
+    imgEls.forEach((imgEl) => {
+      imgEl.outerHTML = `
+    <a class="photo-swipe"
+      href="${imgEl.src}"
+      data-width="${imgEl.getAttribute("width") || imgEl.width * 2}"
+      data-height="${imgEl.getAttribute("height") || imgEl.height * 2}"
+      data-caption="${imgEl.getAttribute("caption") || imgEl.alt}"
+      target="_blank">
+      ${imgEl.outerHTML}
+    </a>`;
+    });
+
+    // Init empty gallery array
+    var container = [];
+
+    // Loop over gallery items and push it to the array
+    var linkEls = mainEl.querySelectorAll("a.photo-swipe");
+    linkEls.forEach((link) => {
+      var item = {
+        src: link.getAttribute("href"),
+        w: link.dataset.width,
+        h: link.dataset.height,
+        title: link.dataset.caption || "",
+      };
+      container.push(item);
+    });
+
+    // Define click event on gallery item
+    linkEls.forEach((link, index) => {
+      link.addEventListener("click", (event) => {
+        // Prevent location change
+        event.preventDefault();
+
+        // Define object and gallery options
+        var pswp = document.querySelector(".pswp");
+
+        var zoomLevel = 1;
+
+        // Define object and gallery options
+        var options = {
+          index: index,
+          bgOpacity: 0.85,
+          showHideOpacity: true,
+          closeOnScroll: true,
+          maxSpreadZoom: 1,
+          getDoubleTapZoom: (isMouseClick, item) => {
+            if (item.detail) {
+              zoomLevel += item.detail.origEvent.shiftKey ? -1 : 1;
+              item.detail = undefined;
+            } else {
+              zoomLevel = zoomLevel === 1 ? 2 : 1;
+            }
+            if (zoomLevel <= 1) {
+              zoomLevel = 1;
+              setTimeout(() => pswp.classList.remove("pswp--zoomed-in"), 0);
+            }
+            return item.initialZoomLevel * zoomLevel;
+          },
+        };
+
+        // Initialize PhotoSwipe
+        var gallery = new PhotoSwipe(
+          pswp,
+          PhotoSwipeUI_Default,
+          container,
+          options
+        );
+
+        gallery.init();
+
+        // Custom zoom event
+        gallery.container.addEventListener("pswpTap", (e) => {
+          gallery.currItem.detail = e.detail;
+        });
+      });
+    });
+  }
+
+  window.addEventListener("load", initPhotoSwipe);
+</script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
 </head>
 <body>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe.
+           It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg"></div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides.
+              PhotoSwipe keeps only 3 of them in the DOM to save memory.
+              Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
+    <!-- Teal navigation bar (theme header, restyled in _sass/custom/_lbnl.scss) -->
 
 
 
@@ -130,7 +413,10 @@
 
 
 
-<header class="site-header site-header-transparent" role="banner">
+
+
+
+<header class="site-header " role="banner">
 
   <div class="wrapper">
     <div class="site-header-inner">
@@ -314,7 +600,7 @@ function googleTranslateElementInit() {
     var documentElement = document.documentElement;
 
     function storeScrollData() {
-      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
+      var y = getScrollPos().y;var scrollStatus = "";
 
       if (y <= 0) {
         scrollStatus = "top";
@@ -337,166 +623,7 @@ function googleTranslateElementInit() {
   }
   document.addEventListener('DOMContentLoaded', initHeader);
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<section class="page-banner">
-    <div class="page-banner-img">
-<div style="background-image: url(/Your%20image%20url)"></div>
-        <img class="img-placeholder" src="/Your%20image%20url">
-</div>
-    <div class="wrapper">
-      <div class="page-banner-inner"><div class="page-banner-default">
-            <h1 class="page-banner-heading">
-              Your awesome heading
-            </h1>
-            <h2 class="page-banner-subheading">
-              Your awesome subheading
-            </h2>
-          </div></div>
-    </div>
-  </section><script>
+<!-- Theme behavior helpers (anchor scrolling, dark-mode toggle, back-to-top) --><script>
   function hashLocate(hashValue) {
     hashValue = hashValue.replace(/^.*#h-/, '');
     hashValue = decodeURIComponent(hashValue);
@@ -665,40 +792,66 @@ function googleTranslateElementInit() {
     });
   })();
 </script>
-<main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <!-- LOGO BAR — replicates the top row of the reference image.
-     Replace placeholder images in assets/images/ with the real logos. -->
+<!-- Custom landing content: white logo band, then the title + diagrams -->
+    <!--
+  Logo bar — white band of partner logos shown directly under the nav.
+
+  Layout: one logo on the left (Berkeley Lab), three on the right (AMCR, CAG,
+  color swatches). Styling lives in _sass/custom/_lbnl.scss (.lbnl-logo-bar*).
+
+  Images live in assets/images/. To swap artwork, replace the files in place
+  (keep the same filenames) — no markup changes needed. `alt` text is required
+  for accessibility; update it if a logo is replaced.
+-->
 <div class="lbnl-logo-bar">
   <div class="lbnl-logo-bar__inner">
+
+    <!-- Left: primary lab logo -->
     <div class="lbnl-logo-bar__left">
       <img src="/assets/images/logo-berkeley-lab.png" alt="Berkeley Lab logo" class="lbnl-logo lbnl-logo--lab">
     </div>
+
+    <!-- Right: program / group logos + brand color swatches -->
     <div class="lbnl-logo-bar__right">
       <img src="/assets/images/logo-amcr.png" alt="AMCR — Applied Mathematics &amp; Computational Research" class="lbnl-logo lbnl-logo--amcr">
       <img src="/assets/images/logo-computer-arch-group.png" alt="Berkeley Lab Computer Architecture Group" class="lbnl-logo lbnl-logo--cag">
       <img src="/assets/images/logo-swatches.png" alt="Color swatches" class="lbnl-logo lbnl-logo--swatches">
     </div>
+
   </div>
 </div>
-<!-- HERO — big title and the two diagram images from the reference. -->
+
+    <!--
+  Hero — the large page title and the two architecture diagrams, shown on the
+  landing page below the logo bar. Styling: _sass/custom/_lbnl.scss (.lbnl-hero*).
+
+  The two figures sit side by side on wide screens and wrap to stack on narrow
+  screens (see .lbnl-hero__images flex rules). Replace the diagrams by swapping
+  the files in assets/images/ (keep the filenames).
+-->
 <section class="lbnl-hero">
   <h1 class="lbnl-hero__title">MoSAIC-P38</h1>
   <div class="lbnl-hero__images">
+
+    <!-- Left diagram: RISC-V <-> SNN message passing -->
     <figure class="lbnl-hero__fig">
       <img src="/assets/images/hero-riscv-snn.png" alt="RISC-V to SNN message-passing diagram">
       <figcaption class="lbnl-caption">RISC-V ↔ SNN</figcaption>
     </figure>
+
+    <!-- Right diagram: overall MoSAIC architecture block diagram -->
     <figure class="lbnl-hero__fig">
       <img src="/assets/images/hero-mosaic-block.png" alt="MoSAIC architecture block diagram">
       <figcaption class="lbnl-caption">MoSAIC architecture</figcaption>
     </figure>
+
   </div>
 </section>
 
-<div class="page-content">
-  <div class="wrapper">
-    <h1 id="mosaic-p38">MoSAIC-P38</h1>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <h1 id="mosaic-p38">MoSAIC-P38</h1>
 
 <p>MoSAIC-P38 is a cutting-edge computer architecture system developed by the <strong>LBNL Computer Architecture Group (AMCR)</strong>. It represents a significant leap in the integration of traditional RISC-V processing with Spiking Neural Network (SNN) acceleration.</p>
 
@@ -716,8 +869,6 @@ function googleTranslateElementInit() {
 
 <p>Explore our <a href="/documentation/">Documentation</a> to learn more about the architecture, or jump into the <a href="/tutorials/">Tutorials</a> to get started with the system.</p>
 
-  </div>
-</div>
       </div>
     </main><footer class="site-footer h-card">
   <data class="u-url" href="/"></data>
@@ -733,5 +884,6 @@ function googleTranslateElementInit() {
     </div>
   </div>
 </footer>
+
 </body>
 </html>

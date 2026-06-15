@@ -1,6 +1,10 @@
 ---
 layout: home
 title: Home
+# Keep the nav bar solid teal. The yat theme makes the header transparent and
+# collapses it to height:0 at the top of the page when a banner is present; this
+# flag disables that behavior so the teal bar stays visible. Do not remove.
+header_transparent: false
 ---
 
 # MoSAIC-P38

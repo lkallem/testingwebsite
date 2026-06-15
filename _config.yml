@@ -1,19 +1,27 @@
+# =============================================================================
+#  Jekyll site configuration — MoSAIC-P38
+#  NOTE: Restart `jekyll serve` after editing this file; it is not hot-reloaded.
+# =============================================================================
+
 title: MoSAIC-P38
 description: >-
   MoSAIC-P38 — a computer architecture system from the LBNL
   Computer Architecture Group (AMCR).
 theme: jekyll-theme-yat
-baseurl: ""
+baseurl: ""   # set to "/repo-name" if hosting under a GitHub Pages project path
 url: ""
 
-# Brand
+# Brand palette (reference only — the authoritative copy used for styling lives
+# in _sass/custom/_lbnl.scss as CSS variables). Kept here for documentation.
 color_palette:
   dark_blue:  "#00313C"
   teal:       "#007681"
   light_gray: "#B1B3B3"
   dark_gray:  "#63666A"
 
-# Navigation (rendered directly under the logo bar)
+# Pages listed in the top navigation bar, in order. Each entry is a source file
+# whose front-matter `title` becomes the menu label. Rendered by the theme's
+# views/header.html; on the landing page the logo bar appears just below it.
 header_pages:
   - index.md
   - documentation.md
@@ -26,10 +34,11 @@ yat:
   date_format: "%b %-d, %Y"
 
 plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
-  - jekyll-paginate
+  - jekyll-feed       # RSS/Atom feed
+  - jekyll-seo-tag    # <meta> SEO tags (consumed by {% seo %} in head.html)
+  - jekyll-paginate   # pagination support
 
+# Files kept out of the built _site output.
 exclude:
   - AGENTS.md
   - Gemfile

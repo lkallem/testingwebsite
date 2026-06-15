@@ -1451,7 +1451,6 @@ html[data-theme=dark] .click-to-top {
   --lbnl-white: #FFFFFF;
 }
 
-/* ---- Global typography & color ---- */
 body {
   font-family: "Libre Franklin", "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif !important;
   color: var(--lbnl-dark-blue);
@@ -1474,7 +1473,6 @@ a:hover {
   color: var(--lbnl-dark-blue);
 }
 
-/* ---- Logo bar (white, sits above nav) ---- */
 .lbnl-logo-bar {
   background: var(--lbnl-white);
   border-bottom: 2px solid var(--lbnl-light-gray);
@@ -1511,38 +1509,25 @@ a:hover {
   height: 56px;
 }
 
-/* ---- NAV BANNER (TEAL, directly under logo bar) ---- */
-/* Override yat's default header/nav background to LBNL teal. */
-.navbar,
-.site-header,
-.header,
-.post-top-bar,
-nav.navbar {
+.site-header {
   background-color: var(--lbnl-teal) !important;
   background-image: none !important;
 }
 
-.navbar a,
-.site-header a,
-.nav-link,
-.navbar .menu a,
-.navbar-nav .nav-item a {
+.site-header a {
   color: var(--lbnl-white) !important;
   font-family: "Libre Franklin", "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif !important;
   letter-spacing: 0.02em;
 }
 
-.navbar a:hover,
-.nav-link:hover {
+.site-header a:hover {
   color: var(--lbnl-dark-blue) !important;
 }
 
-.nav-link.active,
-.navbar a.active {
+.site-header a.active {
   border-bottom: 3px solid var(--lbnl-white);
 }
 
-/* ---- HERO ---- */
 .lbnl-hero {
   max-width: 1100px;
   margin: 0 auto;
@@ -1584,7 +1569,6 @@ nav.navbar {
   margin-top: 0.5rem;
 }
 
-/* ---- Buttons / accents ---- */
 .btn, button {
   background: var(--lbnl-teal);
   color: var(--lbnl-white);
@@ -1595,7 +1579,6 @@ nav.navbar {
   background: var(--lbnl-dark-blue);
 }
 
-/* ---- Footer ---- */
 .site-footer, footer {
   background: var(--lbnl-dark-blue) !important;
   color: var(--lbnl-light-gray) !important;
@@ -1605,7 +1588,6 @@ nav.navbar {
   color: var(--lbnl-light-gray) !important;
 }
 
-/* ---- Responsive ---- */
 @media (max-width: 700px) {
   .lbnl-logo-bar__inner {
     justify-content: center;
