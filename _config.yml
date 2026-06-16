@@ -53,3 +53,4 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - bxewebsite/   # local-only reference copy of the BXE site; not part of this build

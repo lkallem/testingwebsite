@@ -1,0 +1,12 @@
+# Jekyll build output and caches
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# Local-only reference copy of the BXE site. It is a separate git clone (has its
+# own .git), which previously got committed as a broken submodule gitlink and
+# broke GitHub Pages deployment. Keep it out of this repo entirely.
+bxewebsite/
+
+# Local journal
+.private-journal/
