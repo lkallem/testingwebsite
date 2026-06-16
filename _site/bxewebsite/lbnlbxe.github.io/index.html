@@ -1,18 +1,5 @@
 <!DOCTYPE html>
-<!--
-  Layout: home  (landing page)
-
-  This is a STANDALONE copy of the yat theme's `default.html`, intentionally NOT
-  declaring `layout: default`. Reason: the theme's default layout always renders
-  `views/banner.html`, which injects the theme's placeholder banner ("Your
-  awesome heading"). We replace that banner with our own logo bar + hero, so we
-  reproduce the default layout's structure here and simply OMIT the banner
-  include. Everything else (head, header/nav, footer, theme extensions) is kept
-  identical to the theme so behavior matches the rest of the site.
-
-  Page order on screen: nav (header) -> hero -> page content -> footer (with the
-  clickable partner logos + copyright notice; see _includes/views/footer.html).
---><html lang="en">
+<html lang="en">
 <!--
   Document <head>
 
@@ -37,14 +24,14 @@
 <meta property="og:locale" content="en_US">
 <meta name="description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
 <meta name="twitter:description" property="og:description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
-<link rel="canonical" href="http://localhost:4000/">
-<meta property="og:url" content="http://localhost:4000/">
+<link rel="canonical" href="http://localhost:4000/bxewebsite/lbnlbxe.github.io/">
+<meta property="og:url" content="http://localhost:4000/bxewebsite/lbnlbxe.github.io/">
 <meta property="og:site_name" content="MoSAIC-P38">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Home">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).","headline":"Home","name":"MoSAIC-P38","url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).","headline":"Home","url":"http://localhost:4000/bxewebsite/lbnlbxe.github.io/"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="icon" href="">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -292,8 +279,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 </div>
 
 
-
-    <!-- Teal navigation bar (theme header, restyled in _sass/custom/_lbnl.scss) -->
 
 
 
@@ -680,7 +665,151 @@ function googleTranslateElementInit() {
   }
   document.addEventListener('DOMContentLoaded', initHeader);
 </script>
-<!-- Theme behavior helpers (anchor scrolling, dark-mode toggle, back-to-top) --><script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
   function hashLocate(hashValue) {
     hashValue = hashValue.replace(/^.*#h-/, '');
     hashValue = decodeURIComponent(hashValue);
@@ -724,6 +853,113 @@ function googleTranslateElementInit() {
     }
   });
 </script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
 <div id="click-to-top" class="click-to-top">
   <i class="fa fa-arrow-up"></i>
 </div>
@@ -742,47 +978,92 @@ function googleTranslateElementInit() {
     });
   })();
 </script>
-<!-- Custom landing content: the title + diagrams -->
-    <!--
-  Hero — the large page title and the MoSAIC architecture diagram, shown on the
-  landing page. Styling: _sass/custom/_lbnl.scss (.lbnl-hero*).
-
-  The diagram is centered. (The RISC-V/SNN diagram was moved to the Test Cases
-  page temporarily.) Replace the diagram by swapping the file in assets/images/
-  (keep the filename).
--->
-<section class="lbnl-hero">
-  <h1 class="lbnl-hero__title">MoSAIC-P38</h1>
-  <div class="lbnl-hero__images">
-
-    <!-- MoSAIC architecture block diagram (centered, no caption) -->
-    <figure class="lbnl-hero__fig">
-      <img src="/assets/images/hero-mosaic-block.png" alt="MoSAIC architecture block diagram">
-    </figure>
-
-  </div>
-</section>
-
-
-    <main class="page-content" aria-label="Content">
+<main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <h1 id="mosaic-p38">MoSAIC-P38</h1>
+        <div class="bg-dark lbnl-gradient text-white py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-5 fw-normal">
+<strong>B</strong>erkeley e<strong>X</strong>tensible <strong>E</strong>nvironment (BXE)</h1>
+                <p class="lead mb-4">LBNL-hosted, FPGA-based Computer Architecture Simulation Environment</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="" class="btn btn-primary btn-lg" target="_blank"><i class="fa-brands fa-github"></i> Github</a>
+                    <a href="/about" class="btn btn-secondary btn-lg">Learn More</a>
+                    <a href="/docs" class="btn btn-outline-secondary btn-lg">Documentation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>MoSAIC-P38 is a cutting-edge computer architecture system developed by the <strong>LBNL Computer Architecture Group (AMCR)</strong>. It represents a significant leap in the integration of traditional RISC-V processing with Spiking Neural Network (SNN) acceleration.</p>
+<div class="container my-5">
 
-<p>By bridging the gap between general-purpose computing and neuromorphic efficiency, MoSAIC-P38 enables high-performance, low-power execution of complex AI workloads, specifically designed for scientific applications at scale.</p>
+    <div class="alert alert-success mt-4" role="alert">
+        <strong>BXE v3.0.1 Released!</strong> Check out the <a href="/docs/whats-new">What's New</a> page to learn about new features of BXE.
+    </div>
 
-<h3 id="key-features">Key Features</h3>
+    <section id="about">
+        <div class="lbnl-accent">
+            <h2>About This Project</h2>
+            <p><em>Build on the FireSim environment to perform extensive architecture simulation utilizing LBNL's FPGA cluster.</em></p>
+        </div>
+        
+        <p>The work presented here is based on the hard work done by the <a href="https://fires.im/" target="_blank"><i class="fas fa-fire-flame-curved" style="color: #e25822;"></i> FireSim</a> and <a href="https://chipyard.readthedocs.io/en/main/" target="_blank">🏗️ Chipyard</a> development teams at <a href="https://bar.eecs.berkeley.edu/" target="_blank">🐻 UC Berkeley Architecturre Research</a>. Many thanks for helping us bring this platform to life.
+        <br><br>
+        The UCB-BAR team provides docuemntation and tutorials on using FireSim and Chipyard. Most of the documentation provided here is based on those documents. Below is list of useful links for getting started with understanding how FireSim and Chipyard operate:</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="card lbnl-card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                        <a href="https://docs.fires.im/" target="_blank" style='text-decoration: none; color: var(--bs-light); --letter-spacing: -1px; font: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"; font-feature-settings: "kern" 1; font-kerning: normal;'><i class="fas fa-fire-flame-curved" style="color: #e25822;"></i> FireSim</a>
+</h4>
+                        <p class="card-text"></p>
 <ul>
-  <li>
-<strong>Heterogeneous Integration</strong>: Seamless message-passing between RISC-V cores and SNN blocks.</li>
-  <li>
-<strong>Scalable Architecture</strong>: Designed for modular expansion and high-throughput data movement.</li>
-  <li>
-<strong>Optimized for SNN</strong>: Hardware-level support for spiking neural network primitives.</li>
-</ul>
-
-<p>Explore our <a href="/documentation/">Documentation</a> to learn more about the architecture, or jump into the <a href="/tutorials/">Tutorials</a> to get started with the system.</p>
+                            <li><a href="https://docs.fires.im/en/main/FireSim-Basics.html" target="_blank">FireSim Basics</a></li>
+                            <li><a href="https://docs.fires.im/en/main/Local-FPGA-Initial-Setup.html" target="_blank">Local FPGA System Setup</a></li>
+                            <li>Defining Custom Workloads
+                            <ul>
+                                <li><a href="https://firemarshal.readthedocs.io/en/latest/" target="_blank">FireMarshal</a></li>
+                                <li>FireMarshal - <a href="https://firemarshal.readthedocs.io/en/latest/Tutorials/quickstart.html" target="_blank">Quick Start Tutorial</a>
+</li>
+                                <li>FireMarshal - <a href="https://firemarshal.readthedocs.io/en/latest/Tutorials/custom.html" target="_blank">Custom Workloads</a>
+</li>
+                            </ul>
+</li>
+                            <li><a href="https://docs.fires.im/en/main/Advanced-Usage/FireAxe-Partitioning-onto-Multiple-FPGAs/index.html" target="_blank">FireAxe Basics</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card lbnl-card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title"><a href="https://chipyard.readthedocs.io/en/main/" target="_blank"><img src="https://chipyard.readthedocs.io/en/main/_images/chipyard-logo.svg" height="40" class="me-2" alt="Chipyard"></a></h4>
+                        <p class="card-text"></p>
+<ul>
+                            <li><a href="https://chipyard.readthedocs.io/en/main/Chipyard-Basics/Chipyard-Components.html">Chipyard Components</a></li>
+                            <li><a href="https://chipyard.readthedocs.io/en/main/Chipyard-Basics/Development-Ecosystem.html">Development Ecosystem</a></li>
+                            <li>
+<a href="https://chipyard.readthedocs.io/en/main/Chipyard-Basics/Configs-Parameters-Mixins.html">Configs, Parameters, Mixins</a>
+                            <ul>
+                                <li><a href="https://chipyard.readthedocs.io/en/main/Customization/index.html">Customization</a></li>
+                            </ul>
+</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="alert alert-info mt-4" role="alert">
+        <strong>Getting Started:</strong> Follow our <a href="/docs">documentation</a> to learn how to connect and run your own simulations on BXE!
+    </div>
+    
+</div>
 
       </div>
     </main><!--

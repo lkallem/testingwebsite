@@ -1,0 +1,540 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body>
+<h1 id="default-firesim-simulation">Default FireSim Simulation</h1>
+
+<p>The BXE FireSim node is set up to run a Single-Core Rocket RISC-V core with a scratchpad memory on FPGA. Here are the steps to run that example.</p>
+
+<p>1. Once logged into your node, change directories to the <code class="language-plaintext highlighter-rouge">firesim</code> and source FireSim to add it to your path.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="nv">$FIRESIM_ROOT</span>
+<span class="nb">source </span>sourceme-manager.sh <span class="nt">--skip-ssh-setup</span>
+</code></pre></div></div>
+
+<p>2. Make sure your <code class="language-plaintext highlighter-rouge">$FIRESIM_ROOT/deploy/config_runtime.yaml</code> looks like the following:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run-time configuration for the FireSim Simulation Manager</span>
+<span class="c1"># See https://docs.fires.im/en/stable/Advanced-Usage/Manager/Manager-Configuration-Files.html for documentation of all of these params.</span>
+
+<span class="na">run_farm</span><span class="pi">:</span>
+  <span class="na">base_recipe</span><span class="pi">:</span> <span class="s">run-farm-recipes/externally_provisioned.yaml</span>
+  <span class="na">recipe_arg_overrides</span><span class="pi">:</span>
+    <span class="c1"># REQUIRED: default platform used for run farm hosts. this is a class specifying</span>
+    <span class="c1"># how to run simulations on a run farm host.</span>
+    <span class="na">default_platform</span><span class="pi">:</span> <span class="s">XilinxAlveoU250InstanceDeployManager</span>
+
+    <span class="c1"># REQUIRED: default directory where simulations are run out of on the run farm hosts</span>
+    <span class="na">default_simulation_dir</span><span class="pi">:</span> <span class="s">/home/bxeuser/FIRESIM_RUNS_DIR</span>
+
+    <span class="c1"># REQUIRED: default fpga db file that enumerates what fpgas are available on the machine (used by XilinxU* Deploy Managers)</span>
+    <span class="na">default_fpga_db</span><span class="pi">:</span> <span class="s">/opt/firesim-db.json</span>
+
+    <span class="c1"># REQUIRED: List of unique hostnames/IP addresses, each with their</span>
+    <span class="c1"># corresponding specification that describes the properties of the host.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Ex:</span>
+    <span class="c1"># run_farm_hosts_to_use:</span>
+    <span class="c1">#     # use localhost which is described by "four_fpgas_spec" below.</span>
+    <span class="c1">#     - localhost: four_fpgas_spec</span>
+    <span class="c1">#     # supply IP address, which points to a machine that is described</span>
+    <span class="c1">#     # by "four_fpgas_spec" below.</span>
+    <span class="c1">#     - "111.111.1.111": four_fpgas_spec</span>
+    <span class="na">run_farm_hosts_to_use</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">bxeuser@vizion.lbl.gov</span><span class="pi">:</span> <span class="s">eight_fpgas_spec</span>
+
+<span class="na">metasimulation</span><span class="pi">:</span>
+  <span class="na">metasimulation_enabled</span><span class="pi">:</span> <span class="kc">false</span>
+  <span class="c1"># vcs or verilator. use vcs-debug or verilator-debug for waveform generation</span>
+  <span class="na">metasimulation_host_simulator</span><span class="pi">:</span> <span class="s">verilator</span>
+  <span class="c1"># plusargs passed to the simulator for all metasimulations</span>
+  <span class="na">metasimulation_only_plusargs</span><span class="pi">:</span> <span class="s2">"</span><span class="s">+fesvr-step-size=128</span><span class="nv"> </span><span class="s">+max-cycles=100000000"</span>
+  <span class="c1"># plusargs passed to the simulator ONLY FOR vcs metasimulations</span>
+  <span class="na">metasimulation_only_vcs_plusargs</span><span class="pi">:</span> <span class="s2">"</span><span class="s">+vcs+initreg+0</span><span class="nv"> </span><span class="s">+vcs+initmem+0"</span>
+
+<span class="c1"># DOCREF START: target_config area</span>
+<span class="na">target_config</span><span class="pi">:</span>
+    <span class="na">topology</span><span class="pi">:</span> <span class="s">no_net_config</span>
+    <span class="na">no_net_num_nodes</span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">link_latency</span><span class="pi">:</span> <span class="m">6405</span>
+    <span class="na">switching_latency</span><span class="pi">:</span> <span class="m">10</span>
+    <span class="na">net_bandwidth</span><span class="pi">:</span> <span class="m">200</span>
+    <span class="na">profile_interval</span><span class="pi">:</span> <span class="s">-1</span>
+
+    <span class="c1"># This references a section from config_hwdb.yaml for fpga-accelerated simulation</span>
+    <span class="c1"># or from config_build_recipes.yaml for metasimulation</span>
+    <span class="c1"># In homogeneous configurations, use this to set the hardware config deployed</span>
+    <span class="c1"># for all simulators</span>
+    <span class="na">default_hw_config</span><span class="pi">:</span> <span class="s">alveo_u250_firesim_rocket_singlecore_no_nic</span>
+
+    <span class="c1"># Advanced: Specify any extra plusargs you would like to provide when</span>
+    <span class="c1"># booting the simulator (in both FPGA-sim and metasim modes). This is</span>
+    <span class="c1"># a string, with the contents formatted as if you were passing the plusargs</span>
+    <span class="c1"># at command line, e.g. "+a=1 +b=2"</span>
+    <span class="na">plusarg_passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+<span class="c1"># DOCREF END: target_config area</span>
+
+<span class="na">tracing</span><span class="pi">:</span>
+    <span class="na">enable</span><span class="pi">:</span> <span class="s">no</span>
+
+    <span class="c1"># Trace output formats. Only enabled if "enable" is set to "yes" above</span>
+    <span class="c1"># 0 = human readable; 1 = binary (compressed raw data); 2 = flamegraph (stack</span>
+    <span class="c1"># unwinding -&gt; Flame Graph)</span>
+    <span class="na">output_format</span><span class="pi">:</span> <span class="m">0</span>
+
+    <span class="c1"># Trigger selector.</span>
+    <span class="c1"># 0 = no trigger; 1 = cycle count trigger; 2 = program counter trigger; 3 =</span>
+    <span class="c1"># instruction trigger</span>
+    <span class="na">selector</span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">start</span><span class="pi">:</span> <span class="m">0</span>
+    <span class="na">end</span><span class="pi">:</span> <span class="s">-1</span>
+
+<span class="na">autocounter</span><span class="pi">:</span>
+    <span class="na">read_rate</span><span class="pi">:</span> <span class="m">0</span>
+
+<span class="na">workload</span><span class="pi">:</span>
+    <span class="na">workload_name</span><span class="pi">:</span> <span class="s">br-base-uniform.json</span>
+    <span class="na">terminate_on_completion</span><span class="pi">:</span> <span class="s">no</span>
+    <span class="na">suffix_tag</span><span class="pi">:</span> <span class="kc">null</span>
+
+<span class="na">host_debug</span><span class="pi">:</span>
+    <span class="c1"># When enabled (=yes), Zeros-out FPGA-attached DRAM before simulations</span>
+    <span class="c1"># begin (takes 2-5 minutes).</span>
+    <span class="c1"># In general, this is not required to produce deterministic simulations on</span>
+    <span class="c1"># target machines running linux. Enable if you observe simulation non-determinism.</span>
+    <span class="na">zero_out_dram</span><span class="pi">:</span> <span class="s">no</span>
+    <span class="c1"># If disable_synth_asserts: no, simulation will print assertion message and</span>
+    <span class="c1"># terminate simulation if synthesized assertion fires.</span>
+    <span class="c1"># If disable_synth_asserts: yes, simulation ignores assertion firing and</span>
+    <span class="c1"># continues simulation.</span>
+    <span class="na">disable_synth_asserts</span><span class="pi">:</span> <span class="s">no</span>
+
+<span class="c1"># DOCREF START: Synthesized Prints</span>
+<span class="na">synth_print</span><span class="pi">:</span>
+    <span class="c1"># Start and end cycles for outputting synthesized prints.</span>
+    <span class="c1"># They are given in terms of the base clock and will be converted</span>
+    <span class="c1"># for each clock domain.</span>
+    <span class="na">start</span><span class="pi">:</span> <span class="m">0</span>
+    <span class="na">end</span><span class="pi">:</span> <span class="s">-1</span>
+    <span class="c1"># When enabled (=yes), prefix print output with the target cycle at which the print was triggered</span>
+    <span class="na">cycle_prefix</span><span class="pi">:</span> <span class="s">yes</span>
+<span class="c1"># DOCREF END: Synthesized Prints</span>
+</code></pre></div></div>
+
+<p>3. Set up the simulation infrastructure. This will build and deploy all of the software for a FireSim simulation, as well as prepare the FPGA for simulation.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firesim infrasetup <span class="nt">-a</span> <span class="k">${</span><span class="nv">CY_DIR</span><span class="k">}</span>/sims/firesim-staging/sample_config_hwdb.yaml <span class="nt">-r</span> <span class="k">${</span><span class="nv">CY_DIR</span><span class="k">}</span>/sims/firesim-staging/sample_config_build_recipes.yaml
+</code></pre></div></div>
+
+<p>For a first run, this may take some time. You should expect the following output:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>/home/bxeuser/chipyard/.conda-env<span class="o">)</span> bxeuser@firesim-xxx:~/chipyard/sims/firesim<span class="nv">$ </span>firesim infrasetup <span class="nt">-a</span> <span class="k">${</span><span class="nv">CY_DIR</span><span class="k">}</span>/sims/firesim-staging/sample_config_hwdb.yaml <span class="nt">-r</span> <span class="k">${</span><span class="nv">CY_DIR</span><span class="k">}</span>/sims/firesim-staging/sample_config_build_recipes.yaml          
+FireSim Manager. Docs: https://docs.fires.im                                                                                                                                                                                                
+Running: infrasetup                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                            
+firesim_boom_singlecore_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                     
+firesim_boom_singlecore_no_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                  
+firesim_gemmini_printf_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                
+firesim_gemmini_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                       
+firesim_rocket_quadcore_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                     
+firesim_rocket_quadcore_no_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                  
+firesim_rocket_singlecore_no_nic_l2_lbp is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                        
+firesim_rocket_singlecore_sha3_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                              
+firesim_rocket_singlecore_sha3_no_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                           
+firesim_rocket_singlecore_sha3_no_nic_l2_llc4mb_ddr3_printf is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                    
+firesim_supernode_rocket_singlecore_nic_l2_lbp is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                 
+vitis_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                         
+vitis_firesim_gemmini_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                 
+alveo_u250_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                    
+alveo_u250_firesim_rocket_quadcore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                      
+alveo_u250_firesim_boom_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                      
+alveo_u250_firesim_rocket_singlecore_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                       
+alveo_u250_firesim_gemmini_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                            
+alveo_u200_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                    
+alveo_u280_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                    
+xilinx_vcu118_firesim_rocket_singlecore_4GB_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                             
+nitefury_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                      
+run_farm_hosts_dict defaultdict<span class="o">(</span>&lt;class <span class="s1">'list'</span><span class="o">&gt;</span>, <span class="o">{</span><span class="s1">'wilson.lbl.gov'</span>: <span class="o">[(</span>&lt;runtools.run_farm.Inst object at 0x7f2dcac3c3a0&gt;, None<span class="o">)]})</span>                                                                                                            
+set_server_hardware_config 0 None                                                                                                                                                                                                           
+<span class="o">[</span>wilson.lbl.gov] Checking <span class="k">if </span>host instance is up...                                                                                                                                                                                         
+xilinx_alveo_u250/                                                                                                                                                                                                                          
+xilinx_alveo_u250/metadata                                                                                                                                                                                                                  
+xilinx_alveo_u250/firesim.mcs                                                                                                                                                                                                               
+xilinx_alveo_u250/firesim.bit                                                                                                                                                                                                               
+Building FPGA software driver <span class="k">for </span>xilinx_alveo_u250-firesim-FireSim-FireSimRocketConfig-BaseXilinxAlveoU250Config                                                                                                                           
+<span class="o">[</span>localhost] run: make <span class="nv">PLATFORM</span><span class="o">=</span>xilinx_alveo_u250 <span class="nv">TARGET_PROJECT</span><span class="o">=</span>firesim <span class="nv">TARGET_PROJECT_MAKEFRAG</span><span class="o">=</span>/home/bxeuser/chipyard/sims/firesim-staging/../../generators/firechip/chip/src/main/makefrag/firesim <span class="nv">DESIGN</span><span class="o">=</span>FireSim <span class="nv">TARGET_CONFIG</span><span class="o">=</span>FireSimRoc
+ketConfig <span class="nv">PLATFORM_CONFIG</span><span class="o">=</span>BaseXilinxAlveoU250Config xilinx_alveo_u250                                                                                                                                                                       
+<span class="o">[</span>localhost] out: <span class="nb">mkdir</span> <span class="nt">-p</span> /home/bxeuser/chipyard/sims/firesim/sim/midas/src/main/scala/target-symlinks                                                                                                                                      
+<span class="o">[</span>localhost] out: <span class="c"># make the symlink dir                                                                                                                                                                                                     </span>
+<span class="o">[</span>localhost] out: <span class="c"># symlink things                                                                                                                                                                                                           </span>
+<span class="o">[</span>localhost] out: <span class="c"># remove any folders that don't match                                                                                                                                                                                      </span>
+<span class="o">[</span>localhost] out: find /home/bxeuser/chipyard/sims/firesim/sim/midas/src/main/scala/target-symlinks/<span class="k">*</span> <span class="nt">-type</span> d | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nt">-e</span> <span class="s2">"/home/bxeuser/chipyard/sims/firesim/sim/midas/src/main/scala/target-symlinks/bridgeinterfaces"</span> <span class="nt">-e</span> <span class="s2">"/home/bxeuser/
+chipyard/sims/firesim/sim/midas/src/main/scala/target-symlinks/goldengateimplementations"</span> | xargs <span class="nb">rm</span> <span class="nt">-rf</span>                                                                                                                                    
+<span class="o">[</span>localhost] out: <span class="nb">source</span> /home/bxeuser/chipyard/env.sh <span class="o">&amp;&amp;</span> <span class="se">\ </span>                                                                                                                                                                                 
+<span class="o">[</span>localhost] out:        make <span class="nt">-C</span> /home/bxeuser/chipyard/sims/firesim-staging <span class="se">\ </span>                                                                                                                                                              
+<span class="o">[</span>localhost] out:                <span class="nv">SBT_PROJECT</span><span class="o">=</span>firechip <span class="se">\</span>
+<span class="o">[</span>localhost] out:                <span class="nv">MODEL</span><span class="o">=</span>FireSim <span class="se">\</span>
+<span class="o">[</span>localhost] out:                <span class="nv">MODEL_PACKAGE</span><span class="o">=</span>firechip.chip <span class="se">\</span>
+<span class="o">[</span>localhost] out:                <span class="nv">VLOG_MODEL</span><span class="o">=</span>FireSim <span class="se">\ </span>                                                                 
+<span class="o">[</span>localhost] out:                <span class="nv">CONFIG</span><span class="o">=</span>FireSimRocketConfig <span class="se">\</span>
+<span class="o">[</span>localhost] out:                <span class="nv">CONFIG_PACKAGE</span><span class="o">=</span>firechip.chip <span class="se">\</span>
+<span class="o">[</span>localhost] out:                <span class="nv">GENERATOR_PACKAGE</span><span class="o">=</span>chipyard <span class="se">\</span>
+<span class="o">[</span>localhost] out:                <span class="nv">EXTRA_CHISEL_OPTIONS</span><span class="o">=</span><span class="nt">--emit-legacy-sfc</span> <span class="se">\ </span>                                      
+<span class="o">[</span>localhost] out:                <span class="nv">TB</span><span class="o">=</span>unused <span class="se">\ </span>  
+<span class="o">[</span>localhost] out:                <span class="nv">TOP</span><span class="o">=</span>unused
+<span class="o">[</span>localhost] out: make[1]: Entering directory <span class="s1">'/home/bxeuser/chipyard/sims/firesim-staging'</span>
+<span class="o">[</span>localhost] out: Running with <span class="nv">RISCV</span><span class="o">=</span>/home/bxeuser/chipyard/.conda-env/riscv-tools
+<span class="o">[</span>localhost] out: make[1]: Nothing to be <span class="k">done for</span> <span class="s1">'default'</span><span class="nb">.</span> 
+<span class="o">[</span>localhost] out: make[1]: Leaving directory <span class="s1">'/home/bxeuser/chipyard/sims/firesim-staging'</span>
+<span class="o">[</span>localhost] out: <span class="c"># firechip.chip.FireSim.FireSimRocketConfig must be same as Chipyard</span>
+<span class="o">[</span>localhost] out: <span class="nb">ln</span> <span class="nt">-sf</span> /home/bxeuser/chipyard/sims/firesim-staging/generated-src/firechip.chip.FireSim.FireSimRocketConfig/firechip.chip.FireSim.FireSimRocketConfig.sfc.fir /home/bxeuser/chipyard/sims/firesim/sim/generated-src/xilinx_a
+lveo_u250/xilinx_alveo_u250-firesim-FireSim-FireSimRocketConfig-BaseXilinxAlveoU250Config/firechip.chip.FireSim.FireSimRocketConfig.fir
+<span class="o">[</span>localhost] out: <span class="nb">ln</span> <span class="nt">-sf</span> /home/bxeuser/chipyard/sims/firesim-staging/generated-src/firechip.chip.FireSim.FireSimRocketConfig/firechip.chip.FireSim.FireSimRocketConfig.anno.json /home/bxeuser/chipyard/sims/firesim/sim/generated-src/xilinx
+_alveo_u250/xilinx_alveo_u250-firesim-FireSim-FireSimRocketConfig-BaseXilinxAlveoU250Config/firechip.chip.FireSim.FireSimRocketConfig.anno.json
+<span class="o">[</span>localhost] out: <span class="c"># .d needed to run metasim CI tests                                                                  </span>
+<span class="o">[</span>localhost] out: <span class="nb">ln</span> <span class="nt">-sf</span> /home/bxeuser/chipyard/sims/firesim-staging/generated-src/firechip.chip.FireSim.FireSimRocketConfig/firechip.chip.FireSim.FireSimRocketConfig.d /home/bxeuser/chipyard/sims/firesim/sim/generated-src/xilinx_alveo_u
+250/xilinx_alveo_u250-firesim-FireSim-FireSimRocketConfig-BaseXilinxAlveoU250Config/firechip.chip.FireSim.FireSimRocketConfig.d
+
+<span class="c"># ... More Console Output ..</span>
+
+<span class="o">[</span>wilson.lbl.gov] Copying FPGA simulation infrastructure <span class="k">for </span>slot: 0.
+<span class="o">[</span>wilson.lbl.gov] Unloading XDMA Driver Kernel Module.
+<span class="o">[</span>wilson.lbl.gov] Flash all FPGA Slots.
+<span class="o">[</span>wilson.lbl.gov] Copying FPGA flashing scripts <span class="k">for </span>0
+<span class="o">[</span>wilson.lbl.gov] Determine BDF <span class="k">for </span>0
+<span class="o">[</span>wilson.lbl.gov] Flashing FPGA Slot: 0 <span class="o">(</span>01:00.0<span class="o">)</span> with bitstream: /home/bxeuser/FIRESIM_RUNS_DIR/sim_slot_0/xilinx_alveo_u250/firesim.bit
+Warning: run<span class="o">()</span> received nonzero <span class="k">return </span>code 1 <span class="k">while </span>executing <span class="s1">'lsmod | grep -wq xdma'</span><span class="o">!</span>
+<span class="o">[</span>wilson.lbl.gov] Loading XDMA Driver Kernel Module.
+<span class="o">[</span>wilson.lbl.gov] Change permissions on FPGA slot
+<span class="o">[</span>wilson.lbl.gov] Determine BDF <span class="k">for </span>0
+<span class="o">[</span>wilson.lbl.gov] Changing permissions on FPGA Slot: 0 <span class="o">(</span>bdf:01:00.0<span class="o">)</span>
+The full log of this run is:
+/home/bxeuser/chipyard/sims/firesim/deploy/logs/2024-10-31--22-18-09-infrasetup-ZW0RGPULZGU4NVFL.log
+</code></pre></div></div>
+
+<p>4. Run your simulation!</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firesim runworkload <span class="nt">-a</span> <span class="k">${</span><span class="nv">CY_DIR</span><span class="k">}</span>/sims/firesim-staging/sample_config_hwdb.yaml <span class="nt">-r</span> <span class="k">${</span><span class="nv">CY_DIR</span><span class="k">}</span>/sims/firesim-staging/sample_config_build_recipes.yaml
+</code></pre></div></div>
+
+<p>You should expect the following output:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FireSim Manager. Docs: https://docs.fires.im                                                                                                                                                                                                
+Running: runworkload                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                            
+firesim_boom_singlecore_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                     
+firesim_boom_singlecore_no_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                  
+firesim_gemmini_printf_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                
+firesim_gemmini_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                       
+firesim_rocket_quadcore_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                     
+firesim_rocket_quadcore_no_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                  
+firesim_rocket_singlecore_no_nic_l2_lbp is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                        
+firesim_rocket_singlecore_sha3_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                              
+firesim_rocket_singlecore_sha3_no_nic_l2_llc4mb_ddr3 is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                           
+firesim_rocket_singlecore_sha3_no_nic_l2_llc4mb_ddr3_printf is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                    
+firesim_supernode_rocket_singlecore_nic_l2_lbp is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                 
+vitis_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                         
+vitis_firesim_gemmini_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                 
+alveo_u250_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                    
+alveo_u250_firesim_rocket_quadcore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                      
+alveo_u250_firesim_boom_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                      
+alveo_u250_firesim_rocket_singlecore_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                       
+alveo_u250_firesim_gemmini_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                            
+alveo_u200_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                    
+alveo_u280_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                    
+xilinx_vcu118_firesim_rocket_singlecore_4GB_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                             
+nitefury_firesim_rocket_singlecore_no_nic is overriding a deploy makefrag <span class="k">in </span>your config_hwdb.yaml file. Make sure you understand why!                                                                                                      
+run_farm_hosts_dict defaultdict<span class="o">(</span>&lt;class <span class="s1">'list'</span><span class="o">&gt;</span>, <span class="o">{</span><span class="s1">'wilson.lbl.gov'</span>: <span class="o">[(</span>&lt;runtools.run_farm.Inst object at 0x7f0020d083a0&gt;, None<span class="o">)]})</span>                                                                                                            
+set_server_hardware_config 0 None                                                                                                                                                                                                           
+Creating the directory: /home/bxeuser/chipyard/sims/firesim/deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/                                                                                                                   
+xilinx_alveo_u250/                                                                                                                                                                                                                          
+xilinx_alveo_u250/metadata                                                                                                                                                                                                                  
+xilinx_alveo_u250/firesim.mcs                                                                                                                                                                                                               
+xilinx_alveo_u250/firesim.bit                                                                                                                                                                                                               
+xilinx_alveo_u250/                                                                                                                                                                                                                          
+xilinx_alveo_u250/metadata                                                                                                                                                                                                                  
+xilinx_alveo_u250/firesim.mcs                                                                                                                                                                                                               
+xilinx_alveo_u250/firesim.bit                                                                                                                                                                                                               
+<span class="o">[</span>wilson.lbl.gov] Checking <span class="k">if </span>host instance is up...                                                                                                                                                                                         
+start_simulations_instance 1                                                                                                                                                                                                                
+<span class="o">[</span>wilson.lbl.gov] Starting FPGA simulation <span class="k">for </span>slot: 0.                                                                                                                                                                                      
+<span class="o">[</span>wilson.lbl.gov] Determine BDF <span class="k">for </span>0
+</code></pre></div></div>
+
+<p>This will be replaced with a live status page:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FireSim Simulation Status @ 2024-10-31 22:25:06.882595
+<span class="nt">--------------------------------------------------------------------------------</span>
+This workload<span class="s1">'s output is located in:
+/home/bxeuser/chipyard/sims/firesim/deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/
+This run'</span>s log is located <span class="k">in</span>:
+/home/bxeuser/chipyard/sims/firesim/deploy/logs/2024-10-31--22-24-41-runworkload-UHXADI37URRZQWOL.log
+This status will update every 10s.
+<span class="nt">--------------------------------------------------------------------------------</span>
+Instances
+<span class="nt">--------------------------------------------------------------------------------</span>
+Hostname/IP: wilson.lbl.gov | Terminated: False
+<span class="nt">--------------------------------------------------------------------------------</span>
+Simulated Switches
+<span class="nt">--------------------------------------------------------------------------------</span>
+<span class="nt">--------------------------------------------------------------------------------</span>
+Simulated Pipes
+<span class="nt">--------------------------------------------------------------------------------</span>
+<span class="nt">--------------------------------------------------------------------------------</span>
+Simulated Nodes/Jobs
+<span class="nt">--------------------------------------------------------------------------------</span>
+Hostname/IP: wilson.lbl.gov | Job: br-base-uniform0 | Sim running: True 
+<span class="nt">--------------------------------------------------------------------------------</span>
+Summary
+<span class="nt">--------------------------------------------------------------------------------</span>
+1/1 instances are still running.
+1/1 simulations are still running.
+<span class="nt">--------------------------------------------------------------------------------</span>
+</code></pre></div></div>
+
+<p>Once you see the live status page, open another terminal window on your BXE FireSim node and attach to running console of the simulated system using <code class="language-plaintext highlighter-rouge">screen</code>:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>screen <span class="nt">-r</span> fsim0
+</code></pre></div></div>
+
+<p>If you opened the console fast enough, you will see all of the boot messages of your simulated system, until your prompted for a login:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>truncated Linux boot output]
+<span class="o">[</span>    0.257579] Run /init as init process
+<span class="o">[</span>    0.291768] icenet: loading out-of-tree module taints kernel.
+<span class="o">[</span>    0.295288] disk <span class="o">[</span>iceblk] of loaded<span class="p">;</span> 590064 sectors, 1 tags, 16 max request length
+Mounting /dev/iceblk as root device
+<span class="o">[</span>    0.302551] EXT4-fs <span class="o">(</span>iceblk<span class="o">)</span>: mounted filesystem ce904243-7e0d-4b87-a526-50c1e4ea0967 without journal. Quota mode: disabled.
+Loaded platform drivers, booting from disk:
+<span class="o">[</span>    0.352061] EXT4-fs <span class="o">(</span>iceblk<span class="o">)</span>: re-mounted ce904243-7e0d-4b87-a526-50c1e4ea0967. Quota mode: disabl
+ed.
+running /etc/init.d/S01syslogd
+Starting syslogd: OK
+running /etc/init.d/S02klogd
+Starting klogd: OK
+running /etc/init.d/S02sysctl
+Running sysctl: OK
+running /etc/init.d/S10mdev
+Starting mdev: OK
+running /etc/init.d/S40network
+Starting network: OK
+running /etc/init.d/S99run
+launching firemarshal workload run/command
+firemarshal workload run/command <span class="k">done
+
+</span>Welcome to Buildroot
+buildroot login:
+</code></pre></div></div>
+
+<p>Now you can log in as <code class="language-plaintext highlighter-rouge">root</code> (no password) and browse around the system:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Welcome to Buildroot
+buildroot login: root
+<span class="c"># uname -a</span>
+Linux buildroot 6.6.0-00004-g67bc4513761f <span class="c">#2 SMP Mon Oct 28 17:49:31 PDT 2024 riscv64 GNU/Linux</span>
+<span class="c"># cat /proc/cpuinfo</span>
+processor       : 0
+hart            : 0
+isa             : rv64imafdcb_zicntr_zicsr_zifencei_zihpm_zba_zbb_zbs
+mmu             : sv39
+uarch           : sifive,rocket0
+mvendorid       : 0x0
+marchid         : 0x1
+mimpid          : 0x20181004
+
+<span class="c">#</span>
+</code></pre></div></div>
+
+<p>Once you’re done, run <code class="language-plaintext highlighter-rouge">poweroff -f</code> on the simulated system:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># poweroff -f</span>
+<span class="o">[</span>   12.456000] reboot: Power down
+Power off
+<span class="nb">time </span>elapsed: 468.8 s, simulation speed <span class="o">=</span> 88.50 MHz
+<span class="k">***</span> PASSED <span class="k">***</span> after 41492621244 cycles
+Runs 41492621244 cycles
+<span class="o">[</span>PASS] FireSim Test
+SEED: 1526690334
+Script <span class="k">done</span>, file is uartlog
+
+<span class="o">[</span>screen is terminating]
+</code></pre></div></div>
+
+<p>Returning to the manager session, you’ll notice that the loop as exited:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FireSim Simulation Status @ 2024-10-31 22:27:34.515872
+<span class="nt">--------------------------------------------------------------------------------</span>
+This workload<span class="s1">'s output is located in:
+/home/bxeuser/chipyard/sims/firesim/deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/
+This run'</span>s log is located <span class="k">in</span>:
+/home/bxeuser/chipyard/sims/firesim/deploy/logs/2024-10-31--22-24-41-runworkload-UHXADI37URRZQWOL.log
+This status will update every 10s.
+<span class="nt">--------------------------------------------------------------------------------</span>
+Instances
+<span class="nt">--------------------------------------------------------------------------------</span>
+Hostname/IP: wilson.lbl.gov | Terminated: False
+<span class="nt">--------------------------------------------------------------------------------</span>
+Simulated Switches
+<span class="nt">--------------------------------------------------------------------------------</span>
+<span class="nt">--------------------------------------------------------------------------------</span>
+Simulated Pipes
+<span class="nt">--------------------------------------------------------------------------------</span>
+<span class="nt">--------------------------------------------------------------------------------</span>
+Simulated Nodes/Jobs
+<span class="nt">--------------------------------------------------------------------------------</span>
+Hostname/IP: wilson.lbl.gov | Job: br-base-uniform0 | Sim running: False
+<span class="nt">--------------------------------------------------------------------------------</span>
+Summary
+<span class="nt">--------------------------------------------------------------------------------</span>
+1/1 instances are still running.
+0/1 simulations are still running.
+<span class="nt">--------------------------------------------------------------------------------</span>
+FireSim Simulation Exited Successfully. See results <span class="k">in</span>:
+/home/bxeuser/chipyard/sims/firesim/deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/
+The full log of this run is:
+/home/bxeuser/chipyard/sims/firesim/deploy/logs/2024-10-31--22-24-41-runworkload-UHXADI37URRZQWOL.log
+</code></pre></div></div>
+
+<p>If you look at the workload output directory, you’ll see the following:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>/home/bxeuser/chipyard/.conda-env<span class="o">)</span> bxeuser@firesim-xxx:~/chipyard/sims/firesim<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/<span class="k">*</span>/<span class="k">*</span>
+<span class="nt">-rw-rw-r--</span> 1 bxeuser bxeuser   460 Oct 31 15:24 deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/br-base-uniform0/HW_CFG_SUMMARY
+<span class="nt">-rw-rw-r--</span> 1 bxeuser bxeuser   352 Oct 31 15:24 deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/br-base-uniform0/memory_stats0.csv
+<span class="nt">-rw-rw-r--</span> 1 bxeuser bxeuser   101 Jul 29 14:19 deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/br-base-uniform0/os-release
+<span class="nt">-rw-rw-r--</span> 1 bxeuser bxeuser   694 Oct 31 15:24 deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/br-base-uniform0/sim-run.sh
+<span class="nt">-rw-rw-r--</span> 1 bxeuser bxeuser 15637 Oct 31 15:27 deploy/results-workload/2024-10-31--22-24-41-br-base-uniform/br-base-uniform0/uartlog
+</code></pre></div></div>
+
+<p>Where <code class="language-plaintext highlighter-rouge">uartlog</code> is the full console output of the simulation.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Script started on 2024-10-31 15:24:54-07:00 <span class="o">[</span><span class="nv">TERM</span><span class="o">=</span><span class="s2">"screen"</span> <span class="nv">TTY</span><span class="o">=</span><span class="s2">"/dev/pts/1"</span> <span class="nv">COLUMNS</span><span class="o">=</span><span class="s2">"80"</span> <span class="nv">LINES</span><span class="o">=</span><span class="s2">"24"</span><span class="o">]</span>
++domain found: 0x0000
++bus found: 0x01
++device found: 0x00
++function found: 0x0
++bar found: 0x0
+Using: 0000:01:00.0, BAR ID: 0, PCI Vendor ID: 0x10ee, PCI Device ID: 0x903f
+Opening /sys/bus/pci/devices/0000:01:00.0/vendor
+Opening /sys/bus/pci/devices/0000:01:00.0/device
+examining xdma/.
+examining xdma/..
+examining xdma/xdma7_control
+examining xdma/xdma7_c2h_2
+examining xdma/xdma7_events_10
+examining xdma/xdma7_user
+examining xdma/xdma7_events_5
+examining xdma/xdma7_c2h_0
+examining xdma/xdma7_events_3
+examining xdma/xdma7_xvc
+examining xdma/xdma7_events_1
+examining xdma/xdma7_h2c_3
+examining xdma/xdma7_events_15
+examining xdma/xdma7_h2c_1
+examining xdma/xdma7_events_13
+examining xdma/xdma7_events_8
+examining xdma/xdma7_c2h_3
+examining xdma/xdma7_events_11
+examining xdma/xdma7_events_6
+examining xdma/xdma7_c2h_1
+examining xdma/xdma7_events_4
+examining xdma/xdma7_events_2
+examining xdma/xdma7_events_0
+examining xdma/xdma7_h2c_2
+examining xdma/xdma7_events_14
+examining xdma/xdma7_events_9
+examining xdma/xdma7_h2c_0
+Using xdma write queue: /dev/xdma7_h2c_0
+Using xdma <span class="nb">read </span>queue: /dev/xdma7_c2h_0
+widget_registry_t::add_widget<span class="o">(</span>StreamEngine<span class="o">)</span>
+cpu2fpga: 0, fpga2cpu: 1
+UART0 is here <span class="o">(</span>stdin/stdout<span class="o">)</span><span class="nb">.</span>
+TraceRV 0: Tracing disabled, since +tracefile was not provided.
+<span class="nb">command </span>line <span class="k">for </span>program 0. <span class="nv">argc</span><span class="o">=</span>26:
++permissive +macaddr0<span class="o">=</span>00:12:6D:00:00:02 +blkdev0<span class="o">=</span>br-base-uniform0-br-base.img +niclog0<span class="o">=</span>niclog0 +blkdev-log0<span class="o">=</span>blkdev-log0 +trace-select<span class="o">=</span>1 +trace-start<span class="o">=</span>0 +trace-end<span class="o">=</span><span class="nt">-1</span> +trace-output-format<span class="o">=</span>0 +dwarf-file-name<span class="o">=</span>br-base-uniform0-br-base-bin-dwarf +autocounter-readrate<span class="o">=</span>0 +autocounter-filename-base<span class="o">=</span>AUTOCOUNTERFILE +print-start<span class="o">=</span>0 +print-end<span class="o">=</span><span class="nt">-1</span> +linklatency0<span class="o">=</span>6405 +netbw0<span class="o">=</span>200 +shmemportname0<span class="o">=</span>default +domain<span class="o">=</span>0x0000 +bus<span class="o">=</span>0x01 +device<span class="o">=</span>0x00 +function<span class="o">=</span>0x0 +bar<span class="o">=</span>0x0 +pci-vendor<span class="o">=</span>0x10ee +pci-device<span class="o">=</span>0x903f +permissive-off br-base-uniform0-br-base-bin 
+FireSim fingerprint: 0x46697265
+TracerV: Trigger enabled from 0 to 18446744073709551615 cycles
+Commencing simulation.
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+tsibridge_t::tick skipping tick
+
+OpenSBI v1.2
+   ____                    _____ ____ _____
+  / __ <span class="se">\ </span>                 / ____|  _ <span class="se">\_</span>   _|
+ | |  | |_ __   ___ _ __ | <span class="o">(</span>___ | |_<span class="o">)</span> <span class="o">||</span> |
+ | |  | | <span class="s1">'_ \ / _ \ '</span>_ <span class="se">\ \_</span>__ <span class="se">\|</span>  _ &lt; | |
+ | |__| | |_<span class="o">)</span> |  __/ | | |____<span class="o">)</span> | |_<span class="o">)</span> <span class="o">||</span> |_
+  <span class="se">\_</span>___/| .__/ <span class="se">\_</span>__|_| |_|_____/|___^@/_____|
+        | |
+        |_|
+
+Platform Name             : ucb-bar,chipyard
+Platform Features         : medeleg
+Platform HART Count       : 1
+Platform IPI Device       : aclint-mswi
+Platform Timer Device     : aclint-mtimer @ 1000000Hz
+Platform Console Device   : sifive_uart
+Platform HSM Device       : <span class="nt">---</span>
+Platform PMU Device       : <span class="nt">---</span>
+Platform Reboot Device    : htif
+Platform Shutdown Device  : htif
+Platform Suspend Device   : <span class="nt">---</span>
+Firmware Base             : 0x80000000
+Firmware Size             : 360 KB
+Firmware RW Offset        : 0x40000
+Runtime SBI Version       : 1.0
+
+Domain0 Name              : root
+Domain0 Boot HART         : 0
+Domain0 HARTs             : 0<span class="k">*</span>
+Domain0 Region00          : 0x0000000002000000-0x000000000200ffff M: <span class="o">(</span>I,R,W<span class="o">)</span> S/U: <span class="o">()</span>
+Domain0 Region01          : 0x0000000080040000-0x000000008005ffff M: <span class="o">(</span>R,W<span class="o">)</span> S/U: <span class="o">()</span>
+Domain0 Region02          : 0x0000000080000000-0x000000008003ffff M: <span class="o">(</span>R,X<span class="o">)</span> S/U: <span class="o">()</span>
+Domain0 Region03          : 0x0000000000000000-0xffffffffffffffff M: <span class="o">(</span>R,W,X<span class="o">)</span> S/U: <span class="o">(</span>R,W,X<span class="o">)</span>
+Domain0 Next Address      : 0x0000000080200000
+Domain0 Next Arg1         : 0x0000000081600000
+Domain0 Next Mode         : S-mode
+Domain0 SysReset          : <span class="nb">yes
+</span>Domain0 SysSuspend        : <span class="nb">yes
+
+</span>Boot HART ID              : 0
+Boot HART Domain          : root
+Boot HART Priv Version    : v1.12
+Boot HART Base ISA        : rv64imafdcx
+Boot HART ISA Extensions  : none
+Boot HART PMP Count       : 8
+Boot HART PMP Granularity : 4
+Boot HART PMP Address Bits: 33
+Boot HART MHPM Count      : 0
+Boot HART MIDELEG         : 0x0000000000000222
+Boot HART MEDELEG         : 0x000000000000b109
+<span class="o">[</span>    0.000000] Linux version 6.6.0-00004-g67bc4513761f <span class="o">(</span>bxeuser@firesim-c301eb5<span class="o">)</span> <span class="o">(</span>riscv64-unknown-linux-gnu-gcc <span class="o">(</span>gc891d8dc23e<span class="o">)</span> 13.2.0, GNU ld <span class="o">(</span>GNU Binutils<span class="o">)</span> 2.42<span class="o">)</span> <span class="c">#2 SMP Mon Oct 28 17:49:31 PDT 2024</span>
+<span class="o">[</span>    0.000000] Machine model: ucb-bar,chipyard
+<span class="o">[</span>    0.000000] Forcing kernel <span class="nb">command </span>line to: <span class="nv">console</span><span class="o">=</span>ttyS0 <span class="nv">console</span><span class="o">=</span>ttySIF0,3686400 earlycon
+<span class="o">[</span>    0.000000] SBI specification v1.0 detected
+<span class="o">[</span>    0.000000] SBI implementation <span class="nv">ID</span><span class="o">=</span>0x1 <span class="nv">Version</span><span class="o">=</span>0x10002
+<span class="o">[</span>    0.000000] SBI TIME extension detected
+<span class="o">[</span>    0.000000] SBI IPI extension detected
+<span class="o">[</span>    0.000000] SBI RFENCE extension detected
+<span class="o">[</span>    0.000000] SBI SRST extension detected
+<span class="o">[</span>    0.000000] earlycon: sifive0 at MMIO 0x0000000010020000 <span class="o">(</span>options <span class="s1">''</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Congratulations! You have now simulated a RISC-V Core and booted Linux on an FPGA! 🍾 🍾 🍾</p>
+
+<p>You can log into the Buildroot with the following credentials:</p>
+
+<blockquote>
+  <p>Username: <code class="language-plaintext highlighter-rouge">root</code></p>
+
+  <p>Password: [No Password]</p>
+</blockquote>
+
+<p>Make sure to end the simulation by shutting down the simulation with the following command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>poweroff <span class="nt">-f</span>
+</code></pre></div></div>
+</body></html>

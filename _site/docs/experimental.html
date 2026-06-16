@@ -1,0 +1,486 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body>
+<h2 id="overview">Overview</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">/opt/bxe/installBXE.sh</code> script automates the installation of Chipyard and FireSim for the BXE environment. It supports three installation modes:</p>
+
+<ol>
+  <li>
+<strong>Chipyard</strong> - Install Chipyard with FireSim integration</li>
+  <li>
+<strong>FireSim</strong> - Install standalone FireSim</li>
+  <li>
+<strong>BXE Config</strong> - Install BXE-specific configurations into an existing FireSim installation</li>
+</ol>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul>
+  <li>Linux-based system (Ubuntu/Debian recommended)</li>
+  <li>Git installed and configured</li>
+  <li>At least 50GB of free disk space (for Chipyard) or 30GB (for FireSim)</li>
+  <li>Adequate RAM (16GB+ recommended)</li>
+  <li>Internet connectivity for cloning repositories</li>
+</ul>
+
+<h2 id="quick-start">Quick Start</h2>
+
+<h3 id="install-chipyard-with-firesim">Install Chipyard with FireSim</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh chipyard
+</code></pre></div></div>
+
+<p>This will install Chipyard to <code class="language-plaintext highlighter-rouge">$HOME/chipyard</code> (or prompt for an alternative if it already exists).</p>
+
+<h3 id="install-standalone-firesim">Install Standalone FireSim</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh firesim
+</code></pre></div></div>
+
+<p>This will install FireSim to <code class="language-plaintext highlighter-rouge">$HOME/firesim</code> (or prompt for an alternative if it already exists).</p>
+
+<h3 id="install-bxe-configuration">Install BXE Configuration</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh bxe /path/to/firesim
+</code></pre></div></div>
+
+<p>This installs BXE-specific configurations into an existing FireSim installation at the specified path.</p>
+
+<h2 id="detailed-installation-process">Detailed Installation Process</h2>
+
+<h3 id="chipyard-installation">Chipyard Installation</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh chipyard
+</code></pre></div></div>
+
+<p><strong>What happens:</strong></p>
+
+<ol>
+  <li>
+<strong>Installation Path Configuration</strong>
+    <ul>
+      <li>Checks if <code class="language-plaintext highlighter-rouge">$HOME/chipyard</code> exists</li>
+      <li>If it doesn’t exist, uses that as the installation path</li>
+      <li>If it does exist, prompts you to enter an alternative path</li>
+      <li>Default alternative: <code class="language-plaintext highlighter-rouge">$HOME/chipyard-YYYYMMDDHHmmSS</code> (date-stamped)</li>
+    </ul>
+  </li>
+  <li>
+<strong>BXE Configuration Installation</strong>
+    <ul>
+      <li>Creates <code class="language-plaintext highlighter-rouge">~/.bxe</code> directory</li>
+      <li>Backs up existing configuration if present</li>
+      <li>Installs BXE configuration files and managers</li>
+    </ul>
+  </li>
+  <li>
+<strong>Chipyard Repository Cloning</strong>
+    <ul>
+      <li>Clones the Chipyard repository from GitHub</li>
+      <li>Displays the Chipyard location and Git commit hash</li>
+    </ul>
+  </li>
+  <li>
+<strong>Chipyard Build Setup</strong>
+    <ul>
+      <li>Runs <code class="language-plaintext highlighter-rouge">build-setup.sh</code> to prepare the Chipyard environment</li>
+      <li>Applies native build arguments by default</li>
+      <li>If <code class="language-plaintext highlighter-rouge">BXE_CONTAINER</code> environment variable is set, uses container-specific build arguments</li>
+    </ul>
+  </li>
+  <li>
+<strong>FireSim Discovery</strong>
+    <ul>
+      <li>Navigates to the FireSim subdirectory within Chipyard</li>
+      <li>Records FireSim location and Git commit hash</li>
+    </ul>
+  </li>
+  <li>
+<strong>Configuration Update</strong>
+    <ul>
+      <li>Updates <code class="language-plaintext highlighter-rouge">~/.bxe/bxe-firesim.sh</code> with:
+        <ul>
+          <li>Chipyard root directory path</li>
+          <li>Chipyard Git commit hash</li>
+          <li>FireSim root directory path</li>
+          <li>FireSim Git commit hash</li>
+          <li>FireMarshal root directory path</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+<strong>BXE FireSim Configuration</strong>
+    <ul>
+      <li>Copies YAML configuration files to the FireSim deploy directory</li>
+    </ul>
+  </li>
+  <li>
+<strong>Profile Configuration</strong>
+    <ul>
+      <li>Adds BXE environment sourcing to <code class="language-plaintext highlighter-rouge">~/.bashrc</code> (if not already present)</li>
+      <li>Line 10 is the insertion point</li>
+    </ul>
+  </li>
+  <li>
+<strong>SSH Key Management</strong>
+    <ul>
+      <li>Checks for <code class="language-plaintext highlighter-rouge">~/.ssh/firesim.pem</code>
+</li>
+      <li>If missing, generates a new Ed25519 SSH key pair</li>
+      <li>Displays the public key</li>
+      <li>Instructs you to send the public key to the admin for FireSim runner configuration</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="firesim-installation">FireSim Installation</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh firesim
+</code></pre></div></div>
+
+<p><strong>What happens:</strong></p>
+
+<ol>
+  <li>
+<strong>Installation Path Configuration</strong> (same as Chipyard)
+    <ul>
+      <li>Default path: <code class="language-plaintext highlighter-rouge">$HOME/firesim</code>
+</li>
+      <li>Prompts for alternative if it already exists</li>
+      <li>Default alternative: <code class="language-plaintext highlighter-rouge">$HOME/firesim-YYYYMMDDHHmmSS</code>
+</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>BXE Configuration Installation</strong> (same as Chipyard)</p>
+  </li>
+  <li>
+<strong>FireSim Repository Cloning</strong>
+    <ul>
+      <li>Clones standalone FireSim from GitHub</li>
+      <li>Displays location and Git commit hash</li>
+    </ul>
+  </li>
+  <li>
+<strong>FireSim Build Setup</strong>
+    <ul>
+      <li>Runs <code class="language-plaintext highlighter-rouge">build-setup.sh</code> to prepare the FireSim environment</li>
+    </ul>
+  </li>
+  <li>
+<strong>Standalone Configuration Update</strong>
+    <ul>
+      <li>Updates <code class="language-plaintext highlighter-rouge">~/.bxe/bxe-firesim.sh</code> with:
+        <ul>
+          <li>FireSim root directory path (no Chipyard paths)</li>
+          <li>FireSim Git commit hash</li>
+          <li>Conda root directory</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>BXE FireSim Configuration</strong> (same as Chipyard)</p>
+  </li>
+  <li>
+    <p><strong>Profile Configuration</strong> (same as Chipyard)</p>
+  </li>
+  <li>
+<strong>SSH Key Management</strong> (same as Chipyard)</li>
+</ol>
+
+<h3 id="bxe-configuration-installation">BXE Configuration Installation</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh bxe /path/to/firesim
+</code></pre></div></div>
+
+<p><strong>Requirements:</strong></p>
+
+<ul>
+  <li>The FireSim path must exist</li>
+  <li>The FireSim path must contain a <code class="language-plaintext highlighter-rouge">deploy/</code> subdirectory</li>
+  <li>FireSim must have been installed via <code class="language-plaintext highlighter-rouge">installBXE.sh firesim</code> or the official FireSim installation process</li>
+</ul>
+
+<p><strong>What happens:</strong></p>
+
+<ol>
+  <li>
+<strong>Path Validation</strong>
+    <ul>
+      <li>Verifies the provided FireSim path exists</li>
+      <li>Checks for the <code class="language-plaintext highlighter-rouge">deploy/</code> subdirectory</li>
+    </ul>
+  </li>
+  <li>
+<strong>Configuration Reset Prompt</strong>
+    <ul>
+      <li>Asks if you want to reset the BXE configuration</li>
+      <li>Enter <code class="language-plaintext highlighter-rouge">y</code> or <code class="language-plaintext highlighter-rouge">Y</code> to reset, any other input to skip</li>
+    </ul>
+  </li>
+  <li>
+<strong>BXE Configuration Installation</strong> (if you chose to reset)
+    <ul>
+      <li>Creates or updates <code class="language-plaintext highlighter-rouge">~/.bxe</code> directory</li>
+      <li>Backs up existing configuration</li>
+    </ul>
+  </li>
+  <li>
+<strong>BXE FireSim Configuration</strong>
+    <ul>
+      <li>Copies YAML configuration files to the FireSim deploy directory</li>
+    </ul>
+  </li>
+  <li>
+<strong>SSH Key Management</strong>
+    <ul>
+      <li>Performs the same SSH key checks and setup as other installation types</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="installation-path-behavior">Installation Path Behavior</h2>
+
+<h3 id="first-installation">First Installation</h3>
+
+<p>When you first run the script, it uses the default path:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh chipyard
+<span class="c"># Installs to: $HOME/chipyard</span>
+</code></pre></div></div>
+
+<h3 id="multiple-installations">Multiple Installations</h3>
+
+<p>If you already have an installation and want to add another:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh chipyard
+<span class="c"># ⚠️  Directory $HOME/chipyard already exists</span>
+
+<span class="c"># The script will prompt:</span>
+<span class="c"># Default alternative: $HOME/chipyard-20250115143022</span>
+<span class="c"># Enter installation path (or press Enter to use default):</span>
+</code></pre></div></div>
+
+<p><strong>Options:</strong></p>
+
+<ol>
+  <li>Press Enter to use the date-stamped path</li>
+  <li>Type a custom path and press Enter</li>
+</ol>
+
+<p>Example custom path:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enter installation path (or press Enter to use default): $HOME/chipyard-dev
+# Installs to: $HOME/chipyard-dev
+</code></pre></div></div>
+
+<h2 id="ssh-key-management">SSH Key Management</h2>
+
+<p>At the end of any installation, the script performs SSH key setup:</p>
+
+<ol>
+  <li>
+<strong>Key Check</strong>
+    <ul>
+      <li>Looks for <code class="language-plaintext highlighter-rouge">~/.ssh/firesim.pem</code>
+</li>
+      <li>If found: displays “SSH key already exists”</li>
+      <li>If missing: generates a new Ed25519 key pair</li>
+    </ul>
+  </li>
+  <li>
+<strong>Key Generation</strong> (if needed)
+    <ul>
+      <li>Creates <code class="language-plaintext highlighter-rouge">~/.ssh/firesim.pem</code> (private key)</li>
+      <li>Creates <code class="language-plaintext highlighter-rouge">~/.ssh/firesim.pem.pub</code> (public key)</li>
+    </ul>
+  </li>
+  <li>
+<strong>Public Key Display</strong>
+    <ul>
+      <li>Shows your public key in yellow</li>
+      <li>You must send this key to your FireSim cluster admin</li>
+      <li>The admin needs to add it to the authorized keys on FireSim runner machines</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Important:</strong> Without this key configured on the runner machines, you won’t be able to communicate with FireSim.</p>
+
+<h2 id="configuration-files">Configuration Files</h2>
+
+<h3 id="bxe-configuration-directory">BXE Configuration Directory</h3>
+
+<p>All BXE configurations are stored in <code class="language-plaintext highlighter-rouge">~/.bxe/</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/.bxe/
+├── bxe-firesim.sh          # Main BXE environment setup script
+├── config_build.yaml       # Chipyard build configuration
+├── managers/
+│   └── *.py                # BXE manager scripts
+└── *.yaml                  # FireSim deployment configurations
+</code></pre></div></div>
+
+<h3 id="bxe-shell-environment">BXE Shell Environment</h3>
+
+<p>The script adds a line to your <code class="language-plaintext highlighter-rouge">~/.bashrc</code> to source the BXE environment:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/.bxe/bxe-firesim.sh
+</code></pre></div></div>
+
+<p>This line is added at line 10 if it doesn’t already exist.</p>
+
+<p>To activate the BXE environment in your current shell:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/.bxe/bxe-firesim.sh
+</code></pre></div></div>
+
+<h3 id="conda-root-detection">Conda Root Detection</h3>
+
+<p>The script automatically detects Conda:</p>
+
+<ol>
+  <li>Prefers system Conda at <code class="language-plaintext highlighter-rouge">/opt/conda</code>
+</li>
+  <li>Falls back to user Conda at <code class="language-plaintext highlighter-rouge">~/.conda</code>
+</li>
+  <li>Can be overridden via <code class="language-plaintext highlighter-rouge">CONDA_ROOT</code> environment variable</li>
+</ol>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3 id="installation-takes-too-long">Installation Takes Too Long</h3>
+
+<ul>
+  <li>The initial build can take 1-2 hours depending on your system</li>
+  <li>Check disk space: <code class="language-plaintext highlighter-rouge">df -h</code>
+</li>
+  <li>Monitor with: <code class="language-plaintext highlighter-rouge">watch -n 5 'ps aux | grep build'</code>
+</li>
+</ul>
+
+<h3 id="directory-already-exists-error">“Directory already exists” Error</h3>
+
+<p>If you see an error about a directory existing:</p>
+
+<ol>
+  <li>Choose a different installation path when prompted, or</li>
+  <li>Delete/rename the existing directory, or</li>
+  <li>Use the <code class="language-plaintext highlighter-rouge">bxe</code> installation mode to use an existing installation</li>
+</ol>
+
+<h3 id="ssh-key-error">SSH Key Error</h3>
+
+<p>If the script fails during SSH key generation:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Manually regenerate the key</span>
+./regenSSHKey.sh
+</code></pre></div></div>
+
+<p>Then contact the LBNL BXE admin to add the new public key.</p>
+
+<h3 id="conda-not-found">Conda Not Found</h3>
+
+<p>If the script can’t find Conda:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install Conda first</span>
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash Miniforge3-Linux-x86_64.sh
+</code></pre></div></div>
+
+<p>Then run the installation script again.</p>
+
+<h3 id="git-clone-fails">Git Clone Fails</h3>
+
+<p>If cloning the repositories fails:</p>
+
+<ol>
+  <li>Check your internet connection</li>
+  <li>Verify you have Git installed: <code class="language-plaintext highlighter-rouge">git --version</code>
+</li>
+  <li>Try cloning manually first: <code class="language-plaintext highlighter-rouge">git clone https://github.com/ucb-bar/chipyard</code>
+</li>
+</ol>
+
+<h3 id="insufficient-disk-space">Insufficient Disk Space</h3>
+
+<p>Installation requirements:</p>
+
+<ul>
+  <li>
+<strong>Chipyard</strong>: 50GB+</li>
+  <li>
+<strong>FireSim</strong>: 30GB+</li>
+  <li>
+<strong>Build directory</strong>: 10GB+ for artifacts</li>
+</ul>
+
+<p>Check available space:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">df</span> <span class="nt">-h</span> <span class="nv">$HOME</span>
+</code></pre></div></div>
+
+<h2 id="after-installation">After Installation</h2>
+
+<p>Once installation completes successfully:</p>
+
+<ol>
+  <li>
+<strong>Source the BXE environment:</strong>
+    <div class="language-bash highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/.bxe/bxe-firesim.sh
+</code></pre></div>    </div>
+  </li>
+  <li>
+<strong>Verify installation:</strong>
+    <div class="language-bash highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>which firesim
+<span class="nb">echo</span> <span class="nv">$FIRESIM_ROOT</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+<strong>Share your public key:</strong>
+    <ul>
+      <li>View your key: <code class="language-plaintext highlighter-rouge">cat ~/.ssh/firesim.pem.pub</code>
+</li>
+      <li>Send it to your FireSim cluster admin</li>
+      <li>Wait for confirmation before attempting to use FireSim</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="advanced-configuration">Advanced Configuration</h2>
+
+<h3 id="custom-installation-paths">Custom Installation Paths</h3>
+
+<p>If you need installation in non-default locations:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh chipyard /custom/path/chipyard
+/opt/bxe/installBXE.sh firesim /custom/path/firesim
+</code></pre></div></div>
+
+<h3 id="reinstalling-over-existing-setup">Reinstalling Over Existing Setup</h3>
+
+<p>To reinstall and reconfigure:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Backup existing installation</span>
+<span class="nb">mv</span> <span class="nv">$HOME</span>/chipyard <span class="nv">$HOME</span>/chipyard-backup
+
+<span class="c"># Run installer</span>
+/opt/bxe/installBXE.sh chipyard
+</code></pre></div></div>
+
+<!--
+### Using with Docker
+
+If you plan to use the Docker container:
+
+```bash
+export BXE_CONTAINER=1
+/opt/bxe/installBXE.sh chipyard
+```
+
+This configures the installation with container-specific build flags.
+ -->
+</body></html>

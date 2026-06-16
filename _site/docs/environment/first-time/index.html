@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body>
+<h2 id="install-chipyard-with-firesim">Install Chipyard with FireSim</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">/opt/bxe/installBXE.sh</code> script automates the installation of Chipyard and FireSim for the BXE environment. We will be installing the Chipyard with Firesim integration. Run the following command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/bxe/installBXE.sh chipyard
+</code></pre></div></div>
+
+<p>This will install Chipyard to <code class="language-plaintext highlighter-rouge">$HOME/chipyard</code> (or prompt for an alternative if it already exists). You should see the following output:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>/opt/bxe/installBXE.sh chipyard
+<span class="o">==&gt;</span> Installation Path: /home/<span class="nv">$USER</span>/chipyard
+<span class="o">==&gt;</span> Installing BXE configuration...
+  ✓ BXE configuration installed
+<span class="o">==&gt;</span> Cloning Chipyard repository...                                                                            
+Cloning into <span class="s1">'/home/$USER/chipyard'</span>...                                                                        
+remote: Enumerating objects: 47372, <span class="k">done</span><span class="nb">.</span>                                                                     
+remote: Counting objects: 100% <span class="o">(</span>9646/9646<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>                                                             
+remote: Compressing objects: 100% <span class="o">(</span>4146/4146<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>                                                          
+remote: Total 47372 <span class="o">(</span>delta 5727<span class="o">)</span>, reused 5534 <span class="o">(</span>delta 5485<span class="o">)</span>, pack-reused 37726 <span class="o">(</span>from 4<span class="o">)</span>                        
+Receiving objects: 100% <span class="o">(</span>47372/47372<span class="o">)</span>, 63.64 MiB | 10.87 MiB/s, <span class="k">done</span><span class="nb">.</span>                                         
+Resolving deltas: 100% <span class="o">(</span>26226/26226<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>                                                                   
+  ✓ Chipyard cloned at: /home/<span class="nv">$USER</span>/chipyard                                                                  
+  ✓ Chipyard commit: ee46501f                                                                                 
+<span class="o">==&gt;</span> Building Chipyard natively...
+<span class="c">### ...                                         </span>
+</code></pre></div></div>
+
+<p>The install process takes about 10 to 15 minutes. You should the see the following once the installation is complete:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">==========</span> BEGINNING STEP 11: Cleaning up repository <span class="o">==========</span>                                              
+~/chipyard/generators/constellation ~/chipyard                                                                
+Cleared directory <span class="s1">'espresso'</span>                                                                                  
+Submodule <span class="s1">'espresso'</span> <span class="o">(</span>https://github.com/chipsalliance/espresso.git<span class="o">)</span> unregistered <span class="k">for </span>path <span class="s1">'espresso'</span>         
+~/chipyard                                                                                                    
+~/chipyard/tools/cde ~/chipyard                                                                               
+~/chipyard                                                                                                    
+~/chipyard/generators/cva6/src/main/resources/cva6/vsrc ~/chipyard                                            
+Cleared directory <span class="s1">'cva6'</span>                                                                                      
+Submodule <span class="s1">'src/main/resources/vsrc/cva6'</span> <span class="o">(</span>https://github.com/openhwgroup/cva6.git<span class="o">)</span> unregistered <span class="k">for </span>path <span class="s1">'cva6
+'</span>                                                                                                             
+~/chipyard                                                                                                    
+Setup <span class="nb">complete</span><span class="o">!</span>                                                                                               
+  ✓ FireSim location: /home/<span class="nv">$USER</span>/chipyard/sims/firesim                                                       
+  ✓ FireSim commit: b084672c2                                                                                 
+<span class="o">==&gt;</span> Installing BXE FireSim configurations...                                                                  
+  ✓ BXE FireSim configurations installed                                                                      
+<span class="o">==&gt;</span> Installing profile configuration...                                                                       
+  ✓ Profile configured
+<span class="o">==&gt;</span> Checking SSH key...
+  SSH key not found, regenerating...
+Generating public/private ed25519 key pair.
+Your identification has been saved <span class="k">in</span> /home/<span class="nv">$USER</span>/.ssh/firesim.pem
+Your public key has been saved <span class="k">in</span> /home/<span class="nv">$USER</span>/.ssh/firesim.pem.pub
+The key fingerprint is:
+SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx firesim.pem
+The key<span class="s1">'s randomart image is:
++--[ED25519 256]--+
+|                 |
+|                 |
+|                 |
+|                 |
+|                 |
+|                 |
+|                 |
+|                 |
+|                 |
++----[SHA256]-----+
+==&gt; FireSim Public Key:
+ssh-ed25519 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX firesim.pem
+
+Please send the public key above to the admin to ensure it exists on the FireSim runner machines.
+
+========================================
+BXE Install Complete!
+========================================
+</span></code></pre></div></div>
+
+<p>As the installer suggests, send that SSH key to the BXE team so that you can access the FPGA hardware to run your simulations.</p>
+
+<h2 id="initializing-firesim-config-files">Initializing FireSim Config Files</h2>
+
+<p>Initialize the FireSim manager to work with the AMD/Xilinx Alveo U250. Perform the following steps:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="nv">$FIRESIM_ROOT</span>
+<span class="nb">source </span>sourceme-manager.sh <span class="nt">--skip-ssh-setup</span>
+firesim managerinit <span class="nt">--platform</span> xilinx_alveo_u250
+</code></pre></div></div>
+
+<p>This will set up <code class="language-plaintext highlighter-rouge">config_build_recipes.yaml</code>, <code class="language-plaintext highlighter-rouge">config_build.yaml</code>, <code class="language-plaintext highlighter-rouge">config_hwdb.yaml</code>, and <code class="language-plaintext highlighter-rouge">config_runtime.yaml</code>.</p>
+
+<hr>
+
+<p>You’re now ready to run FireSim simulations and build your own FireSim designs. Happy Building!</p>
+</body></html>

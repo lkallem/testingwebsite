@@ -1,0 +1,47 @@
+<!--
+  Footer (overrides the yat theme's _includes/views/footer.html).
+
+  Contains, top to bottom:
+    1. Clickable partner logos (driven by _data/sponsors.yaml) — the bar of
+       logos was moved here from the top of the page, BXE-style.
+    2. The copyright / legal notice from site.copyright_notice (_config.yml).
+    3. The theme's standard "Powered by Jekyll & Yat" + RSS lines.
+
+  Styling lives in _sass/custom/_lbnl.scss (.lbnl-footer-logos, .lbnl-copyright).
+-->
+<footer class="site-footer h-card">
+  <data class="u-url" href="{{ "/" | relative_url }}"></data>
+
+  <div class="wrapper">
+
+    <!-- Clickable partner logos -->
+    {%- assign sorted_sponsors = site.data.sponsors.sponsors | sort: "order" -%}
+    {%- if sorted_sponsors -%}
+    <div class="lbnl-footer-logos">
+      {%- for sponsor in sorted_sponsors -%}
+        <a href="{{ sponsor.url }}" target="_blank" rel="noopener"
+           class="lbnl-footer-logo-link" title="{{ sponsor.alt }}">
+          <img src="{{ '/assets/images/' | append: sponsor.logo | relative_url }}"
+               alt="{{ sponsor.alt }}" class="lbnl-footer-logo">
+        </a>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+
+    <!-- Copyright / legal notice -->
+    {%- if site.copyright_notice and site.copyright_notice != '' -%}
+    <div class="lbnl-copyright">
+      {{ site.copyright_notice | markdownify }}
+    </div>
+    {%- endif -%}
+
+    <!-- Theme attribution + RSS -->
+    <div class="site-footer-inner">
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="https://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></div>
+    </div>
+
+  </div>
+</footer>

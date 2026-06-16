@@ -1,18 +1,5 @@
 <!DOCTYPE html>
-<!--
-  Layout: home  (landing page)
-
-  This is a STANDALONE copy of the yat theme's `default.html`, intentionally NOT
-  declaring `layout: default`. Reason: the theme's default layout always renders
-  `views/banner.html`, which injects the theme's placeholder banner ("Your
-  awesome heading"). We replace that banner with our own logo bar + hero, so we
-  reproduce the default layout's structure here and simply OMIT the banner
-  include. Everything else (head, header/nav, footer, theme extensions) is kept
-  identical to the theme so behavior matches the rest of the site.
-
-  Page order on screen: nav (header) -> hero -> page content -> footer (with the
-  clickable partner logos + copyright notice; see _includes/views/footer.html).
---><html lang="en">
+<html lang="en">
 <!--
   Document <head>
 
@@ -31,20 +18,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
 <!-- Begin Jekyll SEO tag v2.9.0 -->
-<title>Home | MoSAIC-P38</title>
+<title>Publications | MoSAIC-P38</title>
 <meta name="generator" content="Jekyll v4.4.1">
-<meta property="og:title" content="Home">
+<meta property="og:title" content="Publications">
 <meta property="og:locale" content="en_US">
 <meta name="description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
 <meta name="twitter:description" property="og:description" content="MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).">
-<link rel="canonical" href="http://localhost:4000/">
-<meta property="og:url" content="http://localhost:4000/">
+<link rel="canonical" href="http://localhost:4000/research/publications/">
+<meta property="og:url" content="http://localhost:4000/research/publications/">
 <meta property="og:site_name" content="MoSAIC-P38">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Home">
+<meta name="twitter:title" content="Publications">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).","headline":"Home","name":"MoSAIC-P38","url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"MoSAIC-P38 — a computer architecture system from the LBNL Computer Architecture Group (AMCR).","headline":"Publications","url":"http://localhost:4000/research/publications/"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="icon" href="">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -292,8 +279,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 </div>
 
 
-
-    <!-- Teal navigation bar (theme header, restyled in _sass/custom/_lbnl.scss) -->
 
 
 
@@ -680,7 +665,151 @@ function googleTranslateElementInit() {
   }
   document.addEventListener('DOMContentLoaded', initHeader);
 </script>
-<!-- Theme behavior helpers (anchor scrolling, dark-mode toggle, back-to-top) --><script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
   function hashLocate(hashValue) {
     hashValue = hashValue.replace(/^.*#h-/, '');
     hashValue = decodeURIComponent(hashValue);
@@ -724,6 +853,113 @@ function googleTranslateElementInit() {
     }
   });
 </script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
 <div id="click-to-top" class="click-to-top">
   <i class="fa fa-arrow-up"></i>
 </div>
@@ -742,47 +978,82 @@ function googleTranslateElementInit() {
     });
   })();
 </script>
-<!-- Custom landing content: the title + diagrams -->
-    <!--
-  Hero — the large page title and the MoSAIC architecture diagram, shown on the
-  landing page. Styling: _sass/custom/_lbnl.scss (.lbnl-hero*).
-
-  The diagram is centered. (The RISC-V/SNN diagram was moved to the Test Cases
-  page temporarily.) Replace the diagram by swapping the file in assets/images/
-  (keep the filename).
--->
-<section class="lbnl-hero">
-  <h1 class="lbnl-hero__title">MoSAIC-P38</h1>
-  <div class="lbnl-hero__images">
-
-    <!-- MoSAIC architecture block diagram (centered, no caption) -->
-    <figure class="lbnl-hero__fig">
-      <img src="/assets/images/hero-mosaic-block.png" alt="MoSAIC architecture block diagram">
-    </figure>
-
-  </div>
-</section>
-
-
-    <main class="page-content" aria-label="Content">
+<main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <h1 id="mosaic-p38">MoSAIC-P38</h1>
+        <h1 id="publications">Publications</h1>
 
-<p>MoSAIC-P38 is a cutting-edge computer architecture system developed by the <strong>LBNL Computer Architecture Group (AMCR)</strong>. It represents a significant leap in the integration of traditional RISC-V processing with Spiking Neural Network (SNN) acceleration.</p>
-
-<p>By bridging the gap between general-purpose computing and neuromorphic efficiency, MoSAIC-P38 enables high-performance, low-power execution of complex AI workloads, specifically designed for scientific applications at scale.</p>
-
-<h3 id="key-features">Key Features</h3>
-<ul>
+<ul id="markdown-toc">
   <li>
-<strong>Heterogeneous Integration</strong>: Seamless message-passing between RISC-V cores and SNN blocks.</li>
-  <li>
-<strong>Scalable Architecture</strong>: Designed for modular expansion and high-throughput data movement.</li>
-  <li>
-<strong>Optimized for SNN</strong>: Hardware-level support for spiking neural network primitives.</li>
+<a href="#publications" id="markdown-toc-publications">Publications</a>    <ul>
+      <li>
+<a href="#featured-publications" id="markdown-toc-featured-publications">Featured Publications</a>        <ul>
+          <li><a href="#2024" id="markdown-toc-2024">2024</a></li>
+          <li><a href="#2023" id="markdown-toc-2023">2023</a></li>
+        </ul>
+      </li>
+      <li><a href="#preprints--working-papers" id="markdown-toc-preprints--working-papers">Preprints &amp; Working Papers</a></li>
+      <li><a href="#citation-information" id="markdown-toc-citation-information">Citation Information</a></li>
+      <li><a href="#collaboration-opportunities" id="markdown-toc-collaboration-opportunities">Collaboration Opportunities</a></li>
+    </ul>
+  </li>
 </ul>
 
-<p>Explore our <a href="/documentation/">Documentation</a> to learn more about the architecture, or jump into the <a href="/tutorials/">Tutorials</a> to get started with the system.</p>
+<div class="lbnl-accent">
+    <h2>Recent Publications</h2>
+    <p><em>This page demonstrates a child page that appears in the Research dropdown menu.</em></p>
+</div>
+
+<h2 id="featured-publications">Featured Publications</h2>
+
+<h3 id="2024">2024</h3>
+
+<div class="publication-item mb-4">
+    <h4>Advanced Computational Methods for Scientific Discovery</h4>
+    <p class="text-muted">Authors: <em>Replace with actual author names</em></p>
+    <p><em>Journal Name</em>, Vol. XX, No. X, 2024</p>
+    <p><strong>Abstract:</strong> <em>Replace with actual publication abstract describing the research findings and methodology.</em></p>
+    <p>
+        <a href="#" class="btn btn-outline-secondary btn-sm">View Paper</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm">Preprint</a>
+    </p>
+</div>
+
+<div class="publication-item mb-4">
+    <h4>Machine Learning Applications in Scientific Computing</h4>
+    <p class="text-muted">Authors: <em>Replace with actual author names</em></p>
+    <p><em>Conference Proceedings</em>, 2024</p>
+    <p><strong>Abstract:</strong> <em>Replace with actual publication abstract describing the research findings and methodology.</em></p>
+    <p>
+        <a href="#" class="btn btn-outline-secondary btn-sm">View Paper</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm">Slides</a>
+    </p>
+</div>
+
+<h3 id="2023">2023</h3>
+
+<div class="publication-item mb-4">
+    <h4>High-Performance Computing for Climate Modeling</h4>
+    <p class="text-muted">Authors: <em>Replace with actual author names</em></p>
+    <p><em>Journal Name</em>, Vol. XX, No. X, 2023</p>
+    <p><strong>Abstract:</strong> <em>Replace with actual publication abstract describing the research findings and methodology.</em></p>
+    <p>
+        <a href="#" class="btn btn-outline-secondary btn-sm">View Paper</a>
+    </p>
+</div>
+
+<h2 id="preprints--working-papers">Preprints &amp; Working Papers</h2>
+
+<div class="alert alert-info" role="alert">
+    <strong>Preprint Available:</strong> <em>Replace with information about any preprints or working papers currently available.</em>
+</div>
+
+<h2 id="citation-information">Citation Information</h2>
+
+<p><em>Include information about how to cite your work, including any standard citation formats or BibTeX entries.</em></p>
+
+<h2 id="collaboration-opportunities">Collaboration Opportunities</h2>
+
+<p><em>Describe opportunities for collaboration based on your published research and ongoing work.</em></p>
 
       </div>
     </main><!--

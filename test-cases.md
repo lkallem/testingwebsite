@@ -8,6 +8,8 @@ permalink: /test-cases/
 
 Validation and benchmarking for the MoSAIC-P38 system.
 
+![RISC-V to SNN message-passing diagram]({{ '/assets/images/hero-riscv-snn.png' | relative_url }})
+
 ## Validation Suite
 We provide a comprehensive set of tests to verify the correctness of the hardware-software interface.
 - **Connectivity Tests**: Verifies NoC routing between all tiles.

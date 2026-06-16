@@ -1,0 +1,27 @@
+# Footer sponsor/partner logos (clickable). Mirrors the BXE site pattern.
+# `order` controls display order (ascending, left -> right).
+# To add a logo: drop the file in assets/images/ and add an entry here.
+sponsors:
+  - order: 1
+    name: "lbnl"
+    logo: "logo-berkeley-lab.png"
+    alt: "Lawrence Berkeley National Laboratory"
+    url: "https://www.lbl.gov/"
+
+  - order: 2
+    name: "doe"
+    logo: "logo-doe.png"
+    alt: "U.S. Department of Energy"
+    url: "https://www.energy.gov/"
+
+  - order: 3
+    name: "amcr"
+    logo: "logo-amcr.png"
+    alt: "Applied Mathematics and Computational Research Division"
+    url: "https://crd.lbl.gov/divisions/amcr/"
+
+  - order: 4
+    name: "cag"
+    logo: "logo-computer-arch-group.png"
+    alt: "Berkeley Lab Computer Architecture Group"
+    url: "https://github.com/lbnlcomputerarch"

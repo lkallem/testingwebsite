@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body>
+<h2 id="v301---2026-february-19">
+<a href="https://github.com/lbnlbxe/bxe/releases/tag/v3.0.1" target="_blank">v3.0.1</a> - 2026 February 19</h2>
+
+<ul>
+  <li>Updates to setupBXE.sh to account for AMD/Xilinx Tools prerequisites.</li>
+</ul>
+
+<h2 id="v300---2026-january-28">
+<a href="https://github.com/lbnlbxe/bxe/releases/tag/v3.0.0" target="_blank">v3.0.0</a> - 2026 January 28</h2>
+
+<ul>
+  <li>
+<strong>Public Release</strong>: Public release of <a href="https://github.com/lbnlbxe/bxe" target="_blank">BXE source code</a>
+</li>
+  <li>Minor Bugfixes</li>
+</ul>
+
+<h2 id="v230---2025-november-15">v2.3.0 - 2025 November 15</h2>
+
+<ul>
+  <li>
+<strong>Multi-tenancy</strong>: multiple users can have their own checkout of Chipyard/FireSim within the same VM</li>
+  <li>
+<strong>Install Script</strong>: Pulls the latest version of Chipyard/FireSim and sets up them up for BXE
+    <ul>
+      <li>Allows for multiple Chipyard/FireSim environments</li>
+      <li>Allows for FireSim only environments, where you can use the FireSim simulator for custom Verilog without Chipyard (i.e. <a href="https://github.com/lbnlcomputerarch/mosaicfiresim" target="_blank">MoSAIC</a>)</li>
+    </ul>
+  </li>
+  <li>
+<strong>FireAxe Capable</strong>: Allows us to deploy large FireSim simulations (too large to fit on a single FPGA) partitioned across multiple FPGAs
+    <ul>
+      <li><a href="https://docs.fires.im/en/latest/Advanced-Usage/FireAxe-Partitioning-onto-Multiple-FPGAs/index.html" target="_blank">FireAxe Documentation</a></li>
+      <li>Still untested, needs backend work to wire up FPGAs</li>
+    </ul>
+  </li>
+</ul>
+</body></html>

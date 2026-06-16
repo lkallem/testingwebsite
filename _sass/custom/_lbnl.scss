@@ -57,45 +57,13 @@ a                       { color: var(--lbnl-teal); }
 a:hover                 { color: var(--lbnl-dark-blue); }
 
 // -----------------------------------------------------------------------------
-//  1. Logo bar  (white band of partner logos)
-//  Markup: _includes/logo-bar.html
-// -----------------------------------------------------------------------------
-.lbnl-logo-bar {
-  background: var(--lbnl-white);
-  border-bottom: 2px solid var(--lbnl-light-gray);
-  padding: 0.75rem 1.5rem;
-}
-
-.lbnl-logo-bar__inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.lbnl-logo-bar__right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-// Logos share a base height; per-logo modifiers tune individual artwork so the
-// differing source aspect ratios line up optically.
-.lbnl-logo            { height: 56px; width: auto; object-fit: contain; }
-.lbnl-logo--lab       { height: 48px; }
-.lbnl-logo--swatches  { height: 56px; }
-
-// -----------------------------------------------------------------------------
-//  2. Navigation bar  (TEAL)
+//  1. Navigation bar  (DARK BLUE)
 //  This restyles the THEME's own header (<header class="site-header">). Earlier
 //  iterations also targeted .navbar / .nav-link / .post-top-bar, but yat emits
 //  none of those classes, so they were dead selectors and have been removed.
 // -----------------------------------------------------------------------------
 .site-header {
-  background-color: var(--lbnl-teal) !important;
+  background-color: var(--lbnl-dark-blue) !important;
   background-image: none !important;
 }
 
@@ -106,7 +74,8 @@ a:hover                 { color: var(--lbnl-dark-blue); }
 }
 
 .site-header a:hover {
-  color: var(--lbnl-dark-blue) !important;
+  // Teal hover keeps contrast against the dark-blue bar.
+  color: var(--lbnl-teal) !important;
 }
 
 .site-header a.active {
@@ -114,7 +83,7 @@ a:hover                 { color: var(--lbnl-dark-blue); }
 }
 
 // -----------------------------------------------------------------------------
-//  3. Hero  (page title + the two diagram images)
+//  2. Hero  (page title + the two diagram images)
 //  Markup: _includes/hero.html
 // -----------------------------------------------------------------------------
 .lbnl-hero {
@@ -173,7 +142,8 @@ a:hover                 { color: var(--lbnl-dark-blue); }
 }
 
 // -----------------------------------------------------------------------------
-//  Footer
+//  3. Footer  (clickable partner logos + copyright notice)
+//  Markup: _includes/views/footer.html  /  data: _data/sponsors.yaml
 // -----------------------------------------------------------------------------
 .site-footer, footer {
   background: var(--lbnl-dark-blue) !important;
@@ -182,10 +152,62 @@ a:hover                 { color: var(--lbnl-dark-blue); }
 
 .site-footer a, footer a { color: var(--lbnl-light-gray) !important; }
 
+// Clickable partner logos, centered in a wrapping row.
+.lbnl-footer-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0 1.5rem;
+  border-bottom: 1px solid var(--lbnl-dark-gray);
+}
+
+.lbnl-footer-logo-link {
+  display: inline-block;
+  line-height: 0;          // remove descender gap so the logo box hugs the image
+  text-decoration: none;
+  // White plate behind each logo keeps multi-color marks legible on the dark
+  // blue footer without changing the artwork itself.
+  background: var(--lbnl-white);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.lbnl-footer-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  vertical-align: middle;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.lbnl-footer-logo-link:hover .lbnl-footer-logo { opacity: 1; }
+
+// Copyright / legal notice block.
+.lbnl-copyright {
+  max-width: 1000px;
+  margin: 1.25rem auto 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--lbnl-light-gray);
+  text-align: left;
+}
+
+.lbnl-copyright a { text-decoration: underline; }
+
+/* Ensure the header logo stays small across all viewports */
+.site-brand-logo { height: 24px; width: auto; }
+
+/* Hide the light/dark mode toggle globally */
+.theme-toggle { display: none; }
+
 // -----------------------------------------------------------------------------
-//  Responsive: center the logo bar contents on small screens.
+//  Responsive
 // -----------------------------------------------------------------------------
 @media (max-width: 700px) {
-  .lbnl-logo-bar__inner { justify-content: center; }
-  .lbnl-logo-bar__right { justify-content: center; }
+  .lbnl-footer-logos { gap: 1rem; }
+  .lbnl-footer-logo  { height: 32px; }
+
 }

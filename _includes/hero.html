@@ -1,27 +1,19 @@
 <!--
-  Hero — the large page title and the two architecture diagrams, shown on the
-  landing page below the logo bar. Styling: _sass/custom/_lbnl.scss (.lbnl-hero*).
+  Hero — the large page title and the MoSAIC architecture diagram, shown on the
+  landing page. Styling: _sass/custom/_lbnl.scss (.lbnl-hero*).
 
-  The two figures sit side by side on wide screens and wrap to stack on narrow
-  screens (see .lbnl-hero__images flex rules). Replace the diagrams by swapping
-  the files in assets/images/ (keep the filenames).
+  The diagram is centered. (The RISC-V/SNN diagram was moved to the Test Cases
+  page temporarily.) Replace the diagram by swapping the file in assets/images/
+  (keep the filename).
 -->
 <section class="lbnl-hero">
   <h1 class="lbnl-hero__title">MoSAIC-P38</h1>
   <div class="lbnl-hero__images">
 
-    <!-- Left diagram: RISC-V <-> SNN message passing -->
-    <figure class="lbnl-hero__fig">
-      <img src="{{ '/assets/images/hero-riscv-snn.png' | relative_url }}"
-           alt="RISC-V to SNN message-passing diagram">
-      <figcaption class="lbnl-caption">RISC-V &harr; SNN</figcaption>
-    </figure>
-
-    <!-- Right diagram: overall MoSAIC architecture block diagram -->
+    <!-- MoSAIC architecture block diagram (centered, no caption) -->
     <figure class="lbnl-hero__fig">
       <img src="{{ '/assets/images/hero-mosaic-block.png' | relative_url }}"
            alt="MoSAIC architecture block diagram">
-      <figcaption class="lbnl-caption">MoSAIC architecture</figcaption>
     </figure>
 
   </div>
